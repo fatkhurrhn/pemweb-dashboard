@@ -44,8 +44,8 @@ export default function Home() {
                         https://pemweb01.vercel.app/
                     </Link>
 
-                    <p className="text-center text-sm sm:text-base -mt-2">
-                        santai aja gasih, cuma koding kok, pasti kamu bisaaaa, cobain deh :{"v"}
+                    <p className="text-center text-sm sm:text-base -mt-2 px-6">
+                        santai aja gasih, cuma koding kok, pasti kamu bisa, pasti bisaaa :{"v"}
                     </p>
                 </div>
 
