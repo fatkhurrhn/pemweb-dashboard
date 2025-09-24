@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import {
     collection,
     onSnapshot,
@@ -6,6 +6,7 @@ import {
     query,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import { Link } from "react-router-dom";
 
 // Letter & warna untuk status
 const STATUS_TO_LETTER = {
@@ -36,22 +37,26 @@ export default function RekapPresensi() {
     const [sessions, setSessions] = useState([]); // [{id, title, attendances, ...}, ...]
     const [loading, setLoading] = useState(true);
     const [nameQuery, setNameQuery] = useState("");
+    const tableRef = useRef(null);
 
-    // Realtime semua sesi, urut waktu mulai (terlama -> terbaru) biar p1, p2, ...
+    // Realtime semua sesi, urut lama -> baru
     useEffect(() => {
-        const qy = query(collection(db, "presensi"), orderBy("startAt", "asc"));
+        // ambil descending dulu
+        const qy = query(collection(db, "presensi"), orderBy("startAt", "desc"));
         const unsub = onSnapshot(qy, (snap) => {
             const arr = [];
             snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
+            // balik biar lama -> baru
+            arr.reverse();
             setSessions(arr);
             setLoading(false);
         });
         return unsub;
     }, []);
 
-    // Kumpulkan roster (berdasar union NIM dari semua sesi)
+    // Kumpulkan roster (union NIM dari semua sesi)
     const roster = useMemo(() => {
-        const m = new Map(); // nim -> name
+        const m = new Map();
         for (const s of sessions) {
             const att = s.attendances || {};
             for (const [nim, v] of Object.entries(att)) {
@@ -74,12 +79,19 @@ export default function RekapPresensi() {
         }));
     }, [sessions]);
 
-    // Filter berdasarkan nama (case-insensitive)
+    // Filter search nama
     const filteredRoster = useMemo(() => {
         const q = nameQuery.trim().toLowerCase();
         if (!q) return roster;
         return roster.filter((r) => r.name.toLowerCase().includes(q));
     }, [nameQuery, roster]);
+
+    // Auto scroll ke kanan kalau ada sesi baru
+    useEffect(() => {
+        if (tableRef.current) {
+            tableRef.current.scrollLeft = tableRef.current.scrollWidth;
+        }
+    }, [columns.length]);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-5">
@@ -87,7 +99,9 @@ export default function RekapPresensi() {
                 {/* Header */}
                 <header className="flex items-center justify-between flex-wrap gap-3">
                     <div>
-                        <h1 className="text-2xl font-bold">Rekap Presensi</h1>
+                        <Link to="/">
+                            <h1 className="text-xl font-bold"><i class="ri-arrow-left-line"></i> Rekap Presensi</h1>
+                        </Link>
                         <p className="text-sm text-gray-600">Ringkasan kehadiran per pertemuan</p>
                     </div>
 
@@ -97,7 +111,7 @@ export default function RekapPresensi() {
                         <div className="relative mt-1">
                             <input
                                 className="w-full border rounded-xl p-3 pl-10"
-                                placeholder="Ketik nama mahasiswa"
+                                placeholder="Ketik nama kamu"
                                 value={nameQuery}
                                 onChange={(e) => setNameQuery(e.target.value)}
                             />
@@ -105,15 +119,6 @@ export default function RekapPresensi() {
                         </div>
                     </div>
                 </header>
-
-                {/* Legend */}
-                <div className="text-xs text-gray-600 flex items-center gap-2 flex-wrap">
-                    <span className="px-2 py-1 rounded-full bg-green-600 text-white">H = Hadir</span>
-                    <span className="px-2 py-1 rounded-full bg-amber-500 text-white">I = Izin</span>
-                    <span className="px-2 py-1 rounded-full bg-blue-600 text-white">S = Sakit</span>
-                    <span className="px-2 py-1 rounded-full bg-red-600 text-white">A = Alpha</span>
-                    <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-500 border">kosong = Belum isi</span>
-                </div>
 
                 {/* Konten */}
                 {loading ? (
@@ -125,7 +130,7 @@ export default function RekapPresensi() {
                 ) : (
                     <div className="relative">
                         {/* Wrapper scroll horizontal */}
-                        <div className="overflow-x-auto rounded-xl border bg-white shadow-sm">
+                        <div ref={tableRef} className="overflow-x-auto rounded-xl border bg-white shadow-sm">
                             <table className="min-w-full text-sm">
                                 <thead className="bg-gray-50 sticky top-0 z-10">
                                     <tr>
@@ -133,7 +138,7 @@ export default function RekapPresensi() {
                                         <th className="sticky left-0 z-20 bg-gray-50 border px-3 py-3 text-left font-semibold">
                                             Nama
                                         </th>
-                                        {columns.map((c, idx) => (
+                                        {columns.map((c) => (
                                             <th
                                                 key={c.key}
                                                 className="border px-3 py-3 text-center font-semibold"
@@ -152,17 +157,25 @@ export default function RekapPresensi() {
                                                 {stu.name}
                                             </td>
 
-                                            {/* Per sesi: tampilkan H/I/S/A atau kosong */}
+                                            {/* Per sesi */}
                                             {columns.map((c) => {
                                                 const status = sessions
                                                     .find((s) => s.id === c.id)
                                                     ?.attendances?.[stu.nim]?.status;
                                                 const letter = STATUS_TO_LETTER[status];
                                                 const cls = LETTER_CLASS[letter || ""];
-                                                const title = status ? `${status.toUpperCase()} — ${c.title}` : `Belum isi — ${c.title}`;
+                                                const title = status
+                                                    ? `${status.toUpperCase()} — ${c.title}`
+                                                    : `Belum isi — ${c.title}`;
                                                 return (
-                                                    <td key={c.key + "_" + stu.nim} className="border px-2 py-2 text-center" title={title}>
-                                                        <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${cls}`}>
+                                                    <td
+                                                        key={c.key + "_" + stu.nim}
+                                                        className="border px-2 py-2 text-center"
+                                                        title={title}
+                                                    >
+                                                        <span
+                                                            className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${cls}`}
+                                                        >
                                                             {letter}
                                                         </span>
                                                     </td>

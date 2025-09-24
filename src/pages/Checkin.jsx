@@ -9,6 +9,7 @@ import {
     where,
     serverTimestamp,
 } from "firebase/firestore";
+import { Link } from "react-router-dom";
 import { db } from "../firebase";
 
 function withinWindow(session) {
@@ -103,15 +104,21 @@ export default function Checkin() {
         }
     }
 
+    // ---------- Header (Back + Title) ----------
+    const Header = (
+        <header className="flex items-center gap-2">
+            <Link to="/">
+                            <h1 className="text-xl font-bold"><i class="ri-arrow-left-line"></i> Check-in Kehadiran</h1>
+                        </Link>
+        </header>
+    );
+
     // Jika tidak ada sesi open dalam rentang waktu
     if (openSessions.length === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white p-5 flex items-center">
+            <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white p-5">
                 <div className="w-full max-w-md mx-auto space-y-4">
-                    <header className="text-center">
-                        <h1 className="text-2xl font-bold">Check-in Kehadiran</h1>
-                        <p className="text-sm text-gray-600">Tidak ada sesi aktif saat ini</p>
-                    </header>
+                    {Header}
                     <div className="p-4 border rounded-2xl bg-white shadow-sm">
                         Saat ini tidak ada sesi presensi yang sedang <b>open</b> dan aktif waktunya.
                     </div>
@@ -123,21 +130,22 @@ export default function Checkin() {
     // Layar sukses (ephemeral; refresh kembali ke form)
     if (done) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-5 flex items-center">
-                <div className="w-full max-w-md mx-auto space-y-4 text-center">
-                    <div className="mx-auto w-16 h-16 rounded-2xl bg-green-600 text-white grid place-items-center text-3xl shadow">
-                        ✓
-                    </div>
-                    <h1 className="text-xl font-bold">Berhasil Presensi</h1>
-                    <div className="p-4 border rounded-2xl bg-white shadow-sm">
-                        <div className="text-sm text-gray-700">
+            <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-5">
+                <div className="w-full max-w-md mx-auto space-y-4">
+                    {Header}
+                    <div className="p-4 border rounded-2xl bg-white shadow-sm text-center">
+                        <div className="mx-auto w-16 h-16 rounded-2xl bg-green-600 text-white grid place-items-center text-3xl shadow">
+                            ✓
+                        </div>
+                        <h2 className="text-lg font-semibold mt-2">Berhasil Presensi</h2>
+                        <div className="text-sm text-gray-700 mt-1">
                             Sesi presensi: <b>{session?.title}</b>
                         </div>
                         <p className="text-sm text-gray-600 mt-2">
                             Data kehadiranmu sudah tercatat sebagai <b>hadir</b>.
                         </p>
                         <p className="text-xs text-gray-500 mt-3">
-                            Laman ini tidak menyimpan data di perangkat—segarkan halaman untuk kembali ke formulir.
+                            masyaallah, pekan besok jangan lupa hadir lagi yaa hhe, karena pasti ada hal baru lagi yang akan kamu dapatkan. mangaatts...
                         </p>
                     </div>
                 </div>
@@ -145,15 +153,11 @@ export default function Checkin() {
         );
     }
 
+    // ---------- Main ----------
     return (
         <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white p-5">
             <div className="max-w-md mx-auto space-y-4">
-                {/* Header */}
-                <header className="text-center">
-                    <h1 className="text-2xl font-bold">Check-in Kehadiran</h1>
-                    <p className="text-sm text-gray-600">Masukkan NIM kamu untuk presensi</p>
-                </header>
-
+                {Header}
                 {/* Pilih sesi jika lebih dari 1 yang open */}
                 {openSessions.length > 1 && (
                     <div className="p-3 border rounded-2xl bg-white shadow-sm">
@@ -254,7 +258,7 @@ export default function Checkin() {
                         className="mt-1 px-4 py-3 bg-black text-white rounded-xl text-base font-semibold disabled:opacity-50"
                         disabled={!picked || !session}
                     >
-                        Hadir cuy
+                        Hadir dong
                     </button>
 
                     {message && <div className="text-sm text-red-600">{message}</div>}
