@@ -107,7 +107,6 @@ export default function RekapPresensi() {
 
                     {/* Search nama */}
                     <div className="w-full sm:w-72">
-                        <label className="text-xs text-gray-600">Cari nama</label>
                         <div className="relative mt-1">
                             <input
                                 className="w-full border rounded-xl p-3 pl-10"

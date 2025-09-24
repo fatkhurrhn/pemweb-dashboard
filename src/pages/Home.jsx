@@ -1,29 +1,19 @@
 // src/pages/Home.jsx
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-    const [darkMode, setDarkMode] = useState(
-        typeof window !== "undefined" && localStorage.getItem("darkMode") === "enabled"
-    );
+    
     const [open, setOpen] = useState({ dropdown1: false, dropdown2: false });
 
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add("dark");
-            localStorage.setItem("darkMode", "enabled");
-        } else {
-            document.documentElement.classList.remove("dark");
-            localStorage.setItem("darkMode", "disabled");
-        }
-    }, [darkMode]);
+    
 
     const toggleDropdown = (key) =>
         setOpen((prev) => ({ ...prev, [key]: !prev[key] }));
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-white text-gray-900 dark:bg-zinc-900 dark:text-zinc-100">
-            <div className="w-full max-w-[700px] px-5 py-10 flex flex-col items-center gap-5">
+        <div className="min-h-screen w-full bg-white text-gray-900 dark:bg-zinc-900 dark:text-zinc-100">
+            <div className="w-full max-w-[700px] px-5 py-10 pt-8 mx-auto flex flex-col items-center gap-5">
                 {/* Header / Profile */}
                 <div className="flex flex-col items-center gap-4 mt-6">
                     <div className="relative w-44 h-44">
@@ -31,7 +21,10 @@ export default function Home() {
                             src="https://punca.id/wp-content/uploads/2024/07/8f3392322c445bc654c1d8b73018a12b.jpg"
                             alt="Fatkhurrhn's profile"
                             className="w-full h-full object-cover rounded-full ring-4 ring-sky-400/90"
-                            onError={(e) => (e.currentTarget.src = "https://punca.id/wp-content/uploads/2024/07/8f3392322c445bc654c1d8b73018a12b.jpg")}
+                            onError={(e) =>
+                            (e.currentTarget.src =
+                                "https://punca.id/wp-content/uploads/2024/07/8f3392322c445bc654c1d8b73018a12b.jpg")
+                            }
                         />
                     </div>
 
@@ -102,12 +95,10 @@ export default function Home() {
                                 <i className="ri-upload-cloud-2-fill"></i>
                             </div>
                             <div className="font-semibold text-sm sm:text-base text-gray-800 dark:text-zinc-100">
-                               Submit Tugas
+                                Submit Tugas
                             </div>
                         </div>
-                        <i
-                            className="ri-arrow-right-s-line text-lg text-zinc-500"
-                        ></i>
+                        <i className="ri-arrow-right-s-line text-lg text-zinc-500"></i>
                     </Link>
                 </div>
             </div>

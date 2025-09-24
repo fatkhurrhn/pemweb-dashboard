@@ -116,7 +116,7 @@ export default function Checkin() {
     // Jika tidak ada sesi open dalam rentang waktu
     if (openSessions.length === 0) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white p-5">
+            <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-5">
                 <div className="w-full max-w-md mx-auto space-y-4">
                     {Header}
                     <div className="p-4 border rounded-2xl bg-white shadow-sm">
@@ -155,7 +155,7 @@ export default function Checkin() {
 
     // ---------- Main ----------
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white p-5">
+        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-5">
             <div className="max-w-md mx-auto space-y-4">
                 {Header}
                 {/* Pilih sesi jika lebih dari 1 yang open */}
@@ -199,7 +199,7 @@ export default function Checkin() {
                         Masukkan 3 digit terakhir NIM
                         <input
                             className="border p-3 rounded-xl w-full mt-1 text-base"
-                            placeholder="contoh: 021"
+                            placeholder="contoh: 019"
                             value={nimQuery}
                             onChange={(e) => {
                                 // hanya digit, max 3, simpan apa adanya agar leading zero ('021') tidak hilang
