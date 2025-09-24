@@ -51,8 +51,8 @@ export default function Home() {
 
                 {/* Pills / Badges */}
                 <div className="flex flex-wrap justify-center gap-2.5 mb-3">
-                    <Pill href="wa.me//6281952441368" icon="ri-whatsapp-line" label="whatsapp (kak iyan)" />
-                    <Pill href="wa.me//6282285512813" icon="ri-whatsapp-line" label="whatsapp (kak thur)" />
+                    <Pill href="https://wa.me//6281952441368" icon="ri-whatsapp-line" label="whatsapp (kak iyan)" />
+                    <Pill href="https://wa.me//6282285512813" icon="ri-whatsapp-line" label="whatsapp (kak thur)" />
                 </div>
 
                 {/* Cards + Dropdowns */}
