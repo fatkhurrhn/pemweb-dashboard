@@ -1,9 +1,47 @@
 // src/pages/Home.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 
 export default function Home() {
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [isInstalled, setIsInstalled] = useState(false);
+
+    // Tangkap event beforeinstallprompt dan simpan ke state
+    useEffect(() => {
+        function handleBIP(e) {
+            e.preventDefault();
+            setDeferredPrompt(e);
+        }
+        function handleAppInstalled() {
+            setIsInstalled(true);
+            setDeferredPrompt(null);
+        }
+
+        // Cek jika sudah terpasang (standalone): Chrome/Edge & iOS Safari
+        const standalone =
+            window.matchMedia?.("(display-mode: standalone)")?.matches ||
+            window.navigator.standalone === true;
+        if (standalone) setIsInstalled(true);
+
+        window.addEventListener("beforeinstallprompt", handleBIP);
+        window.addEventListener("appinstalled", handleAppInstalled);
+        return () => {
+            window.removeEventListener("beforeinstallprompt", handleBIP);
+            window.removeEventListener("appinstalled", handleAppInstalled);
+        };
+    }, []);
+
+    const handleInstall = async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log("User install choice:", outcome);
+        setDeferredPrompt(null);
+    };
+
+    const showInstall = !!deferredPrompt && !isInstalled;
+
     return (
         <div className="min-h-screen w-full bg-white text-gray-900">
             {/* ===== NAVBAR ===== */}
@@ -29,6 +67,7 @@ export default function Home() {
                         >
                             <i className="ri-upload-cloud-2-line mr-2" /> Tugas
                         </Link>
+
                         <Link
                             to="/login"
                             className="inline-flex items-center px-3 py-2 rounded-lg 
@@ -37,7 +76,6 @@ export default function Home() {
                         >
                             <i className="ri-shield-user-line mr-2" /> Login
                         </Link>
-
                     </div>
                 </div>
             </nav>
@@ -64,14 +102,16 @@ export default function Home() {
                         <div className="mt-6 flex flex-wrap gap-3">
                             {/* --- Mobile Layout --- */}
                             {/* Install Practix (ganti Video Tutorial) */}
-                            <Link
-                                to="/install"
-                                className="inline-flex items-center justify-center gap-2 
+                            {showInstall && (
+                                <button
+                                    onClick={handleInstall}
+                                    className="inline-flex items-center justify-center gap-2 
                px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
                hover:opacity-90 flex-1 sm:hidden"
-                            >
-                                <i className="ri-install-line" /> Install Practix
-                            </Link>
+                                >
+                                    <i className="ri-install-line" /> Install Practix
+                                </button>
+                            )}
 
                             {/* Video Tutorial (ganti Pertanyaan) */}
                             <Link
@@ -114,7 +154,6 @@ export default function Home() {
                             </Link>
                         </div>
 
-
                         <div className="mt-6 hidden sm:flex items-center gap-4 text-sm text-gray-600">
                             <span className="inline-flex items-center gap-1">
                                 <i className="ri-shield-check-line text-green-600" /> Tanpa login untuk mahasiswa
@@ -127,7 +166,6 @@ export default function Home() {
                                 <i className="ri-smartphone-line" /> Optimasi mobile
                             </span>
                         </div>
-
                     </div>
 
                     <div className="md:pl-6">
@@ -264,7 +302,12 @@ export default function Home() {
                         <div className="inline-grid place-items-center w-5 h-5 rounded-md bg-gray-900 text-white">
                             <i className="ri-code-s-slash-line text-[11px]"></i>
                         </div>
-                        <span>Develop by <Link to="https://fatkhurrhn.vercel.app/"><u>Fatkhurrhn</u></Link></span>
+                        <span>
+                            Develop by{" "}
+                            <Link to="https://fatkhurrhn.vercel.app/">
+                                <u>Fatkhurrhn</u>
+                            </Link>
+                        </span>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link
