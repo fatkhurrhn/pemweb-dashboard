@@ -13,7 +13,7 @@ export default function Home() {
                         <span className="inline-grid place-items-center w-8 h-8 rounded-lg bg-sky-600 text-white">
                             <i className="ri-stack-fill"></i>
                         </span>
-                        <span>PemWeb01</span>
+                        <span>Practix</span>
                     </Link>
 
                     <div className="flex items-center gap-2">
@@ -58,22 +58,43 @@ export default function Home() {
                             Presensi & Tugas <span className="text-sky-600">lebih cepat</span> dan tertata
                         </h1>
                         <p className="mt-4 text-gray-600 max-w-xl">
-                            Satu portal untuk presensi kuliah, pengumpulan tugas, dan rekap otomatis.
-                            Desain mobile-first biar kamu nyaman mengakses via HP.
+                            All-in-one app untuk presensi, tugas, rekap, dan tutorial. Bikin pengalaman kuliah jadi lebih teratur dan simpel.
                         </p>
 
                         <div className="mt-6 flex flex-wrap gap-3">
-                            {/* Video Tutorial */}
+                            {/* --- Mobile Layout --- */}
+                            {/* Install Practix (ganti Video Tutorial) */}
+                            <Link
+                                to="/install"
+                                className="inline-flex items-center justify-center gap-2 
+               px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
+               hover:opacity-90 flex-1 sm:hidden"
+                            >
+                                <i className="ri-install-line" /> Install Practix
+                            </Link>
+
+                            {/* Video Tutorial (ganti Pertanyaan) */}
                             <Link
                                 to="/tutorial"
                                 className="inline-flex items-center justify-center gap-2 
-               px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
-               hover:opacity-90 flex-1 sm:flex-none sm:px-4 sm:py-3 sm:text-base"
+               px-3 py-2 text-sm rounded-lg border hover:bg-gray-50 
+               flex-1 sm:hidden"
                             >
                                 <i className="ri-folder-video-line" /> Video Tutorial
                             </Link>
 
-                            {/* Submit Tugas - hidden di mobile */}
+                            {/* --- Desktop Layout --- */}
+                            {/* Video Tutorial (asli, desktop) */}
+                            <Link
+                                to="/tutorial"
+                                className="hidden sm:inline-flex items-center justify-center gap-2 
+               px-4 py-3 rounded-lg bg-sky-600 text-white 
+               hover:opacity-90"
+                            >
+                                <i className="ri-folder-video-line" /> Video Tutorial
+                            </Link>
+
+                            {/* Submit Tugas - tetap hidden di mobile */}
                             <Link
                                 to="/tugas"
                                 className="hidden sm:inline-flex items-center gap-2 
@@ -82,13 +103,12 @@ export default function Home() {
                                 <i className="ri-upload-cloud-2-line" /> Submit Tugas
                             </Link>
 
-                            {/* Kontak Telegram */}
+                            {/* Pertanyaan (asli, desktop) */}
                             <Link
                                 to="https://t.me/fatkhurrhn"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-2 
-               px-3 py-2 text-sm rounded-lg border hover:bg-gray-50 
-               flex-1 sm:flex-none sm:px-4 sm:py-3 sm:text-base"
+                                className="hidden sm:inline-flex items-center justify-center gap-2 
+               px-4 py-3 rounded-lg border hover:bg-gray-50"
                             >
                                 <i className="ri-question-answer-line" /> Pertanyaan
                             </Link>

@@ -1,17 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="logo.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>praktikum-pemweb01</title>
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
+  <!-- App name & deskripsi -->
+  <title>Practix – Presensi, Tugas, Rekap & Tutorial</title>
+  <meta name="description"
+    content="Practix adalah aplikasi all-in-one untuk presensi, submit tugas, rekap, dan tutorial praktikum. Cepat, ringan, dan siap di-install." />
+
+  <!-- Icons -->
+  <link rel="icon" href="/logo.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <!-- (opsional) mask-icon untuk Safari macOS -->
+  <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#0284c7" />
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- PWA meta (Android/Chromium) -->
+  <meta name="theme-color" content="#0284c7" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- PWA meta (iOS) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Practix" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Remix Icon -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
 <body>
+  <noscript>Silakan aktifkan JavaScript untuk menjalankan aplikasi ini.</noscript>
   <div id="root"></div>
+  <!-- Entry Vite -->
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
