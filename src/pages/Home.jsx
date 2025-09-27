@@ -129,19 +129,19 @@ export default function Home() {
                         <div className="mt-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl p-2 shadow-sm">
                             {/* contoh isi dropdown card 3 */}
                             <DropItem href="https://drive.google.com/file/d/1caq8CZsSyz4xcimOfoHalAGbqPM_qds3/view?usp=drive_link">
-                                Video 1 — cara buat akun github
+                                Video 1 [android] — cara buat akun github
                             </DropItem>
                             <DropItem href="https://drive.google.com/file/d/1PPHOH0RbwfeNPwo7weMQpwIn7A610TZM/view?usp=drive_link">
-                                Video 2 — cara buat repository
+                                Video 2 [android] — cara buat repository
                             </DropItem>
                             <DropItem href="https://drive.google.com/file/d/1D0LwpX07fp9GHhicyxSqMJZXkyNsxAtd/view?usp=drive_link">
-                                Video 3 — setup text editor
+                                Video 3 [android] — setup text editor
                             </DropItem>
                             <DropItem href="https://drive.google.com/file/d/1E2RslRgO4a7ZocEWe1_Ys2vlunMbmwQK/view?usp=drive_link">
-                                Video 4 — upload latihan ke repository
+                                Video 4 [android] — upload latihan ke repository
                             </DropItem>
                             <DropItem href="https://drive.google.com/file/d/1hYsvXrZxwrLqBSEcfblZkRH3-ADQ3TGB/view?usp=drive_link">
-                                Video 5 — cara upload tugas 01
+                                Video 5 [android] — cara upload tugas 01
                             </DropItem>
                         </div>
                     )}
