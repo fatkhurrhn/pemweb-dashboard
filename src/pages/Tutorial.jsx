@@ -16,7 +16,7 @@ const MEETINGS = [
             { title: "Video 2 [Android] — Buat repository", href: "https://drive.google.com/file/d/1PPHOH0RbwfeNPwo7weMQpwIn7A610TZM/view?usp=drive_link" },
             { title: "Video 3 [Android] — Setup text editor", href: "https://drive.google.com/file/d/1D0LwpX07fp9GHhicyxSqMJZXkyNsxAtd/view?usp=drive_link" },
             { title: "Video 4 [Android] — Upload latihan ke repo", href: "https://drive.google.com/file/d/1E2RslRgO4a7ZocEWe1_Ys2vlunMbmwQK/view?usp=drive_link" },
-            { title: "Video 5 [Android] — Upload tugas 01", href: "https://drive.google.com/file/d/1hYsvXrZxwrLqBSEcfblZkRH3-ADQ3TGB/view?usp=drive_link" },
+            { title: "Video 5 [Android] — Cara upload tugas 01", href: "https://drive.google.com/file/d/1hYsvXrZxwrLqBSEcfblZkRH3-ADQ3TGB/view?usp=drive_link" },
         ],
     },
     // Placeholder pertemuan berikutnya — tinggal ganti status & isi videos kalau siap
