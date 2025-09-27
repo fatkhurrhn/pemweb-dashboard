@@ -7,7 +7,7 @@ export default function Home() {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [isInstalled, setIsInstalled] = useState(false);
 
-    // Tangkap event beforeinstallprompt dan simpan ke state
+    // Tangkap event beforeinstallprompt dan status terpasang
     useEffect(() => {
         function handleBIP(e) {
             e.preventDefault();
@@ -18,7 +18,6 @@ export default function Home() {
             setDeferredPrompt(null);
         }
 
-        // Cek jika sudah terpasang (standalone): Chrome/Edge & iOS Safari
         const standalone =
             window.matchMedia?.("(display-mode: standalone)")?.matches ||
             window.navigator.standalone === true;
@@ -32,15 +31,41 @@ export default function Home() {
         };
     }, []);
 
-    const handleInstall = async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log("User install choice:", outcome);
-        setDeferredPrompt(null);
+    const showInstallHint = () => {
+        // Deteksi iOS Safari
+        const ua = navigator.userAgent || "";
+        const isIOS = /iP(hone|od|ad)/.test(ua);
+        const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+
+        if (isInstalled) {
+            alert("Practix sudah terpasang di perangkat kamu. Buka dari Home Screen / App list ya!");
+            return;
+        }
+
+        if (isIOS && isSafari) {
+            alert("Untuk menginstal di iOS: buka menu Share ➜ Add to Home Screen.");
+            return;
+        }
+
+        alert("Jika tombol install tidak muncul, cari ikon 'Install app' di address bar browser (Chrome/Edge) atau buka menu ⋮ lalu pilih Install app.");
     };
 
-    const showInstall = !!deferredPrompt && !isInstalled;
+    const handleInstall = async () => {
+        // Kalau event tersedia → munculkan prompt
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log("User install choice:", outcome);
+            setDeferredPrompt(null);
+            return;
+        }
+        // Fallback: tampilkan hint meski tombol tetap ada
+        showInstallHint();
+    };
+
+    // Label dinamis biar jelas statusnya
+    const installLabel = isInstalled ? "Install Practix (terpasang)" : "Install Practix";
+    const installShortLabel = isInstalled ? "Install (terpasang)" : "Install";
 
     return (
         <div className="min-h-screen w-full bg-white text-gray-900">
@@ -67,6 +92,15 @@ export default function Home() {
                         >
                             <i className="ri-upload-cloud-2-line mr-2" /> Tugas
                         </Link>
+
+                        {/* Tombol install di navbar (SELALU ADA) */}
+                        <button
+                            onClick={handleInstall}
+                            className="hidden sm:inline-flex items-center px-3 py-2 rounded-lg bg-sky-600 text-white hover:opacity-90"
+                            title={isInstalled ? "Sudah terpasang" : "Pasang ke perangkat"}
+                        >
+                            <i className="ri-install-line mr-2" /> {installShortLabel}
+                        </button>
 
                         <Link
                             to="/login"
@@ -101,17 +135,15 @@ export default function Home() {
 
                         <div className="mt-6 flex flex-wrap gap-3">
                             {/* --- Mobile Layout --- */}
-                            {/* Install Practix (ganti Video Tutorial) */}
-                            {showInstall && (
-                                <button
-                                    onClick={handleInstall}
-                                    className="inline-flex items-center justify-center gap-2 
+                            {/* Tombol Install (SELALU ADA) */}
+                            <button
+                                onClick={handleInstall}
+                                className="inline-flex items-center justify-center gap-2 
                px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
                hover:opacity-90 flex-1 sm:hidden"
-                                >
-                                    <i className="ri-install-line" /> Install Practix
-                                </button>
-                            )}
+                            >
+                                <i className="ri-install-line" /> {installLabel}
+                            </button>
 
                             {/* Video Tutorial (ganti Pertanyaan) */}
                             <Link
@@ -124,7 +156,7 @@ export default function Home() {
                             </Link>
 
                             {/* --- Desktop Layout --- */}
-                            {/* Video Tutorial (asli, desktop) */}
+                            {/* Video Tutorial (desktop) */}
                             <Link
                                 to="/tutorial"
                                 className="hidden sm:inline-flex items-center justify-center gap-2 
@@ -134,7 +166,7 @@ export default function Home() {
                                 <i className="ri-folder-video-line" /> Video Tutorial
                             </Link>
 
-                            {/* Submit Tugas - tetap hidden di mobile */}
+                            {/* Submit Tugas - hidden di mobile */}
                             <Link
                                 to="/tugas"
                                 className="hidden sm:inline-flex items-center gap-2 
@@ -143,7 +175,7 @@ export default function Home() {
                                 <i className="ri-upload-cloud-2-line" /> Submit Tugas
                             </Link>
 
-                            {/* Pertanyaan (asli, desktop) */}
+                            {/* Pertanyaan (desktop) */}
                             <Link
                                 to="https://t.me/fatkhurrhn"
                                 rel="noopener noreferrer"
@@ -158,10 +190,7 @@ export default function Home() {
                             <span className="inline-flex items-center gap-1">
                                 <i className="ri-shield-check-line text-green-600" /> Tanpa login untuk mahasiswa
                             </span>
-
-                            {/* Garis pemisah, hanya muncul di desktop */}
                             <span className="hidden sm:inline h-4 w-px bg-gray-300" />
-
                             <span className="inline-flex items-center gap-1">
                                 <i className="ri-smartphone-line" /> Optimasi mobile
                             </span>
