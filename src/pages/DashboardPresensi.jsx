@@ -291,7 +291,7 @@ export default function DashboardPresensi() {
     const checkinUrl = `${window.location.origin}/checkin`;
 
     return (
-        <div className="p-4 max-w-7xl mx-auto space-y-8">
+        <div className="p-4 max-w-4xl mx-auto space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -391,7 +391,7 @@ export default function DashboardPresensi() {
                         <div className="p-3 border rounded-lg">
                             <h4 className="font-semibold mb-2">Statistik Realtime</h4>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                                <StatChip label="Belum isi" value={stats["belum isi"]} className={STATUS_BADGE["belum isi"]} />
+                                <StatChip label="Kosong" value={stats["belum isi"]} className={STATUS_BADGE["belum isi"]} />
                                 <StatChip label="Hadir" value={stats.hadir} className={STATUS_BADGE.hadir} />
                                 <StatChip label="Izin" value={stats.izin} className={STATUS_BADGE.izin} />
                                 <StatChip label="Sakit" value={stats.sakit} className={STATUS_BADGE.sakit} />
