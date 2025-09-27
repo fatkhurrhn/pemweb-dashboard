@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import AutoToTop from "./components/AutoToTop";
 import Checkin from "./pages/Checkin";
 import Home from "./pages/Home";
 import RekapPresensi from "./pages/RekapPresensi";
@@ -8,6 +9,7 @@ import DashboardPresensi from "./pages/DashboardPresensi";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import RekapTugas from "./pages/RekapTugas";
+import Tutorial from "./pages/Tutorial";
 
 // komponen proteksi route
 function PrivateRoute({ children }) {
@@ -18,9 +20,11 @@ function PrivateRoute({ children }) {
 function App() {
   return (
     <BrowserRouter>
+    <AutoToTop/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/checkin" element={<Checkin />} />
+        <Route path="/tutorial" element={<Tutorial />} />
         <Route path="/tugas" element={<InputTugas />} />
         <Route path="/rekap-presensi" element={<RekapPresensi />} />
         <Route path="/rekap-tugas" element={<RekapTugas />} />

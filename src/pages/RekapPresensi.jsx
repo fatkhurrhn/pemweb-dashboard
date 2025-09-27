@@ -1,29 +1,27 @@
+// src/pages/RekapPresensi.jsx
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import {
-    collection,
-    onSnapshot,
-    orderBy,
-    query,
-} from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
+import Qna from "../components/qna";
+import BottomNav from "../components/BottomNav";
 
 // Letter & warna untuk status
 const STATUS_TO_LETTER = {
-    "hadir": "H",
-    "izin": "I",
-    "sakit": "S",
-    "alpha": "A",
-    "belum isi": "",   // dikosongkan
+    hadir: "H",
+    izin: "I",
+    sakit: "S",
+    alpha: "A",
+    "belum isi": "",
     undefined: "",
     null: "",
 };
 const LETTER_CLASS = {
-    "H": "bg-green-600 text-white",
-    "I": "bg-amber-500 text-white",
-    "S": "bg-blue-600 text-white",
-    "A": "bg-red-600 text-white",
-    "": "bg-gray-100 text-gray-400", // belum isi
+    H: "bg-green-600 text-white",
+    I: "bg-amber-500 text-white",
+    S: "bg-yellow-600 text-white",
+    A: "bg-red-600 text-white",
+    "": "bg-sky-50 text-sky-600 ring-1 ring-sky-100", // kosong → lembut & sepalet
 };
 
 // Ambil label pN dari judul. Contoh: "Praktikum 1 - ..." => p1
@@ -41,13 +39,11 @@ export default function RekapPresensi() {
 
     // Realtime semua sesi, urut lama -> baru
     useEffect(() => {
-        // ambil descending dulu
         const qy = query(collection(db, "presensi"), orderBy("startAt", "desc"));
         const unsub = onSnapshot(qy, (snap) => {
             const arr = [];
             snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
-            // balik biar lama -> baru
-            arr.reverse();
+            arr.reverse(); // lama -> baru
             setSessions(arr);
             setLoading(false);
         });
@@ -70,14 +66,16 @@ export default function RekapPresensi() {
     }, [sessions]);
 
     // Kolom sesi (p-label + id + title)
-    const columns = useMemo(() => {
-        return sessions.map((s, i) => ({
-            id: s.id,
-            key: s.id,
-            pLabel: toPLabel(s.title, i),
-            title: s.title || "(tanpa judul)",
-        }));
-    }, [sessions]);
+    const columns = useMemo(
+        () =>
+            sessions.map((s, i) => ({
+                id: s.id,
+                key: s.id,
+                pLabel: toPLabel(s.title, i),
+                title: s.title || "(tanpa judul)",
+            })),
+        [sessions]
+    );
 
     // Filter search nama
     const filteredRoster = useMemo(() => {
@@ -94,53 +92,59 @@ export default function RekapPresensi() {
     }, [columns.length]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white p-5">
-            <div className="mx-auto max-w-6xl space-y-4">
+        <div className="min-h-screen bg-white pb-16">
+            <div className="mx-auto max-w-6xl space-y-4 px-4 pt-5">
                 {/* Header */}
                 <header className="flex items-center justify-between flex-wrap gap-3">
-                    <div>
-                        <Link to="/">
-                            <h1 className="text-xl font-bold"><i class="ri-arrow-left-line"></i> Rekap Presensi</h1>
-                        </Link>
-                        <p className="text-sm text-gray-600">Ringkasan kehadiran per pertemuan</p>
+                    <div className="space-y-0.5">
+                        <h1 className="text-2xl font-extrabold text-sky-700">Rekap Presensi</h1>
+                        <p className="text-sm text-gray-600">
+                            Total Mahasiswa: <b>{roster.length}</b>
+                        </p>
                     </div>
+
+                    {/* QnA di kanan */}
+                    <Qna />
 
                     {/* Search nama */}
                     <div className="w-full sm:w-72">
                         <div className="relative mt-1">
                             <input
-                                className="w-full border rounded-xl p-3 pl-10"
-                                placeholder="Ketik nama kamu"
+                                className="w-full border border-sky-100 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-600"
+                                placeholder="Cari nama…"
                                 value={nameQuery}
                                 onChange={(e) => setNameQuery(e.target.value)}
                             />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔎</span>
+                            <i className="ri-search-line absolute right-3 top-1/2 -translate-y-1/2 text-sky-600" />
                         </div>
                     </div>
                 </header>
 
                 {/* Konten */}
                 {loading ? (
-                    <div className="p-4 border rounded-xl bg-white shadow-sm">Memuat…</div>
+                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm text-sky-700">Memuat…</div>
                 ) : sessions.length === 0 ? (
-                    <div className="p-4 border rounded-xl bg-white shadow-sm">Belum ada sesi presensi.</div>
+                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm">Belum ada sesi presensi.</div>
                 ) : roster.length === 0 ? (
-                    <div className="p-4 border rounded-xl bg-white shadow-sm">Belum ada data mahasiswa.</div>
+                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm">Belum ada data mahasiswa.</div>
                 ) : (
                     <div className="relative">
                         {/* Wrapper scroll horizontal */}
-                        <div ref={tableRef} className="overflow-x-auto rounded-xl border bg-white shadow-sm">
+                        <div
+                            ref={tableRef}
+                            className="overflow-x-auto rounded-xl border border-sky-100 bg-white shadow-sm"
+                        >
                             <table className="min-w-full text-sm">
-                                <thead className="bg-gray-50 sticky top-0 z-10">
+                                <thead className="bg-sky-50 sticky top-0 z-10">
                                     <tr>
                                         {/* Kolom nama sticky */}
-                                        <th className="sticky left-0 z-20 bg-gray-50 border px-3 py-3 text-left font-semibold">
-                                            Nama
+                                        <th className="sticky left-0 z-20 bg-sky-50 border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700">
+                                            Nama Mahasiswa
                                         </th>
                                         {columns.map((c) => (
                                             <th
                                                 key={c.key}
-                                                className="border px-3 py-3 text-center font-semibold"
+                                                className="border border-sky-100 px-3 py-3 text-center font-semibold text-sky-700"
                                                 title={c.title}
                                             >
                                                 {c.pLabel}
@@ -150,17 +154,15 @@ export default function RekapPresensi() {
                                 </thead>
                                 <tbody>
                                     {filteredRoster.map((stu) => (
-                                        <tr key={stu.nim} className="odd:bg-white even:bg-gray-50">
+                                        <tr key={stu.nim} className="odd:bg-white even:bg-sky-50/40">
                                             {/* Nama sticky */}
-                                            <td className="sticky left-0 z-10 bg-inherit border px-3 py-2 font-medium">
+                                            <td className="sticky left-0 z-10 bg-inherit border border-sky-100 px-3 py-2 text-gray-800">
                                                 {stu.name}
                                             </td>
 
                                             {/* Per sesi */}
                                             {columns.map((c) => {
-                                                const status = sessions
-                                                    .find((s) => s.id === c.id)
-                                                    ?.attendances?.[stu.nim]?.status;
+                                                const status = sessions.find((s) => s.id === c.id)?.attendances?.[stu.nim]?.status;
                                                 const letter = STATUS_TO_LETTER[status];
                                                 const cls = LETTER_CLASS[letter || ""];
                                                 const title = status
@@ -169,7 +171,7 @@ export default function RekapPresensi() {
                                                 return (
                                                     <td
                                                         key={c.key + "_" + stu.nim}
-                                                        className="border px-2 py-2 text-center"
+                                                        className="border border-sky-100 px-2 py-2 text-center"
                                                         title={title}
                                                     >
                                                         <span
@@ -193,6 +195,9 @@ export default function RekapPresensi() {
                     </div>
                 )}
             </div>
+
+            {/* Bottom nav */}
+            <BottomNav />
         </div>
     );
 }

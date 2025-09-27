@@ -158,9 +158,9 @@ export default function DashboardTugas() {
             {/* Header + Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                     <Link to="/dashboard">
-                                           <h1 className="text-2xl font-bold"><i class="ri-arrow-left-line"></i> Dashboard Tugas</h1>
-                                           </Link>
+                    <Link to="/dashboard">
+                        <h1 className="text-2xl font-bold"><i class="ri-arrow-left-line"></i> Dashboard Tugas</h1>
+                    </Link>
                     <p className="text-sm text-gray-600">Kelola sesi tugas & pantau submission mahasiswa</p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -215,8 +215,8 @@ export default function DashboardTugas() {
                             <button
                                 onClick={() => updateStatus("draft")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "draft"
-                                        ? "bg-gray-900 text-white"
-                                        : "bg-gray-100 text-gray-800"
+                                    ? "bg-gray-900 text-white"
+                                    : "bg-gray-100 text-gray-800"
                                     }`}
                                 title="Set Draft"
                             >
@@ -225,8 +225,8 @@ export default function DashboardTugas() {
                             <button
                                 onClick={() => updateStatus("open")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "open"
-                                        ? "bg-green-600 text-white"
-                                        : "bg-green-100 text-green-800"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-green-100 text-green-800"
                                     }`}
                                 title="Set Open"
                             >
@@ -235,8 +235,8 @@ export default function DashboardTugas() {
                             <button
                                 onClick={() => updateStatus("closed")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "closed"
-                                        ? "bg-red-600 text-white"
-                                        : "bg-red-100 text-red-800"
+                                    ? "bg-red-600 text-white"
+                                    : "bg-red-100 text-red-800"
                                     }`}
                                 title="Set Closed"
                             >
@@ -267,10 +267,10 @@ export default function DashboardTugas() {
                             </span>
                             <span
                                 className={`px-3 py-1 rounded-full text-sm ${active.status === "open"
-                                        ? "bg-green-100 text-green-800"
-                                        : active.status === "closed"
-                                            ? "bg-red-100 text-red-800"
-                                            : "bg-gray-100 text-gray-800"
+                                    ? "bg-green-100 text-green-800"
+                                    : active.status === "closed"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-gray-100 text-gray-800"
                                     }`}
                             >
                                 Status sesi: <b>{active.status}</b>
@@ -424,8 +424,8 @@ export default function DashboardTugas() {
                                         type="button"
                                         onClick={() => setForm((f) => ({ ...f, status: "draft" }))}
                                         className={`px-2 py-1 rounded-full text-xs ${form.status === "draft"
-                                                ? "bg-gray-900 text-white"
-                                                : "bg-gray-100 text-gray-800"
+                                            ? "bg-gray-900 text-white"
+                                            : "bg-gray-100 text-gray-800"
                                             }`}
                                     >
                                         Draft
@@ -434,8 +434,8 @@ export default function DashboardTugas() {
                                         type="button"
                                         onClick={() => setForm((f) => ({ ...f, status: "open" }))}
                                         className={`px-2 py-1 rounded-full text-xs ${form.status === "open"
-                                                ? "bg-green-600 text-white"
-                                                : "bg-green-100 text-green-800"
+                                            ? "bg-green-600 text-white"
+                                            : "bg-green-100 text-green-800"
                                             }`}
                                     >
                                         Open
@@ -444,8 +444,8 @@ export default function DashboardTugas() {
                                         type="button"
                                         onClick={() => setForm((f) => ({ ...f, status: "closed" }))}
                                         className={`px-2 py-1 rounded-full text-xs ${form.status === "closed"
-                                                ? "bg-red-600 text-white"
-                                                : "bg-red-100 text-red-800"
+                                            ? "bg-red-600 text-white"
+                                            : "bg-red-100 text-red-800"
                                             }`}
                                     >
                                         Closed

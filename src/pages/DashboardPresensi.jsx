@@ -296,9 +296,9 @@ export default function DashboardPresensi() {
             <div className="flex items-center justify-between">
                 <div>
                    <Link to="/dashboard">
-                        <h1 className="text-2xl font-bold"><i class="ri-arrow-left-line"></i> Dashboard Tugas</h1>
+                        <h1 className="text-2xl font-bold"><i class="ri-arrow-left-line"></i> Dashboard Presensi</h1>
                         </Link>
-                    <p className="text-sm text-gray-500">Pantau Tugas mahasiswa secara realtime</p>
+                    <p className="text-sm text-gray-500">Pantau Presensi mahasiswa secara realtime</p>
                 </div>
                 <button
                     onClick={() => setShowCreate(true)}
