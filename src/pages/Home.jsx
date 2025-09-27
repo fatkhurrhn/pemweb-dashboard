@@ -64,7 +64,7 @@ export default function Home() {
     };
 
     // Label dinamis biar jelas statusnya
-    const installLabel = isInstalled ? "Install Practix (terpasang)" : "Install Practix";
+    const installLabel = isInstalled ? "Practix Terpasang" : "Install Practix";
     const installShortLabel = isInstalled ? "Install (terpasang)" : "Install";
 
     return (
@@ -386,7 +386,7 @@ function Feature({ icon, title, desc, tone = "sky" }) {
 function Step({ title, desc }) {
     return (
         <li className="relative p-5 rounded-2xl border bg-white shadow-sm">
-            <div className="absolute -top-3 -left-3 w-9 h-9 rounded-lg bg-gray-900 text-white grid place-items-center text-sm">
+            <div className="absolute -top-3 -left-3 w-9 h-9 rounded-lg bg-sky-600 text-white grid place-items-center text-sm">
                 <i className="ri-check-line" />
             </div>
             <div className="font-semibold">{title}</div>
