@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
+import ChatRoom from "../components/ChatRoom";
 
 export default function Home() {
     const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -69,6 +70,7 @@ export default function Home() {
 
     return (
         <div className="min-h-screen w-full bg-white text-gray-900">
+            <ChatRoom/>
             {/* ===== NAVBAR ===== */}
             <nav className="sticky top-0 z-30 border-b bg-white/80 backdrop-blur">
                 <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
