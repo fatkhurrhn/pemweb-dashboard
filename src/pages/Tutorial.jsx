@@ -31,10 +31,9 @@ const TASKS = [
         code: "T2",
         title: "Tugas2 — HTML Basic",
         color: "bg-sky-600",
-        // instruction:
-        //     "Buatlah sebuah halaman HTML yang menerapakan materi pertemuan dua dengan tampilan halamannya sebagai berikut.",
-        instruction: "coming soon",
-        // reference: "https://exampllee.vercel.app/t2.html",
+        instruction:
+            "Buatlah sebuah halaman HTML yang menerapakan materi pertemuan dua dengan tampilan halamannya sebagai berikut.",
+        reference: "https://exampllee.vercel.app/t2.html",
         videos: [],
     },
 ];
