@@ -64,9 +64,6 @@ export default function Home() {
     };
 
     // Label dinamis biar jelas statusnya
-    const installLabel = isInstalled ? "Practix Terpasang" : "Install Practix";
-    const installShortLabel = isInstalled ? "Install (terpasang)" : "Install";
-
     return (
         <div className="min-h-screen w-full bg-white text-gray-900">
             {/* ===== NAVBAR ===== */}
@@ -92,15 +89,6 @@ export default function Home() {
                         >
                             <i className="ri-upload-cloud-2-line mr-2" /> Tugas
                         </Link>
-
-                        {/* Tombol install di navbar (SELALU ADA) */}
-                        <button
-                            onClick={handleInstall}
-                            className="hidden sm:inline-flex items-center px-3 py-2 rounded-lg bg-sky-600 text-white hover:opacity-90"
-                            title={isInstalled ? "Sudah terpasang" : "Pasang ke perangkat"}
-                        >
-                            <i className="ri-install-line mr-2" /> {installShortLabel}
-                        </button>
 
                         <Link
                             to="/login"
@@ -142,7 +130,7 @@ export default function Home() {
                px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
                hover:opacity-90 flex-1 sm:hidden"
                             >
-                                <i className="ri-install-line" /> {installLabel}
+                                <i className="ri-user-follow-line" /> Rekap Presensi
                             </button>
 
                             {/* Video Tutorial (ganti Pertanyaan) */}
@@ -152,27 +140,27 @@ export default function Home() {
                px-3 py-2 text-sm rounded-lg border hover:bg-gray-50 
                flex-1 sm:hidden"
                             >
-                                <i className="ri-folder-video-line" /> Video Tutorial
+                                <i className="ri-folder-upload-line" /> Rekap Tugas
                             </Link>
 
                             {/* --- Desktop Layout --- */}
                             {/* Video Tutorial (desktop) */}
                             <Link
-                                to="/tutorial"
+                                to="/rekap-presensi"
                                 className="hidden sm:inline-flex items-center justify-center gap-2 
                px-4 py-3 rounded-lg bg-sky-600 text-white 
                hover:opacity-90"
                             >
-                                <i className="ri-folder-video-line" /> Video Tutorial
+                                <i className="ri-folder-video-line" /> Rekap Presensi
                             </Link>
 
                             {/* Submit Tugas - hidden di mobile */}
                             <Link
-                                to="/tugas"
+                                to="/rekap-tugas"
                                 className="hidden sm:inline-flex items-center gap-2 
                px-4 py-3 rounded-xl border hover:bg-gray-50"
                             >
-                                <i className="ri-upload-cloud-2-line" /> Submit Tugas
+                                <i className="ri-upload-cloud-2-line" /> Rekap Tugas
                             </Link>
 
                             {/* Pertanyaan (desktop) */}

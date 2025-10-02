@@ -17,7 +17,7 @@ export default function BottomNav() {
         { name: "Home", path: "/", icon: "ri-home-3" },
         { name: "Presensi", path: "/checkin", icon: "ri-qr-scan-2" },
         { name: "Tugas", path: "/tugas", icon: "ri-upload-cloud-2" },
-        { name: "Tutorial", path: "/tutorial", icon: "ri-folder-video" },
+        { name: "Intruksi", path: "/intruksi", icon: "ri-folder-2" },
     ];
 
     // Rekap aktif untuk dua sub: /rekap-presensi, /rekap-tugas

@@ -3,47 +3,45 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 
-/** Struktur data tutorial per pertemuan.
- * Tambah pertemuan baru tinggal push object di array ini.
- */
-const MEETINGS = [
+const TASKS = [
     {
-        id: "p1",
-        title: "Praktikum 01 — Pengantar",
+        id: "t1",
+        code: "T1",
+        title: "Tugas1 — Introduction HTML",
         color: "bg-sky-600",
+        instruction:
+            "Buatlah akun github, install code editor versi mobile, dan buat satu file bernama tugas1.html yang isinya adalah stukrur html, kemudian up ke repo lalu kirimkan link repository atau ss code editornya lalu kirim!",
+        
         videos: [
-            { title: "Video 1 [Android] — Buat akun GitHub", href: "https://drive.google.com/file/d/1caq8CZsSyz4xcimOfoHalAGbqPM_qds3/view?usp=drive_link" },
-            { title: "Video 2 [Android] — Buat repository", href: "https://drive.google.com/file/d/1PPHOH0RbwfeNPwo7weMQpwIn7A610TZM/view?usp=drive_link" },
-            { title: "Video 3 [Android] — Setup text editor", href: "https://drive.google.com/file/d/1D0LwpX07fp9GHhicyxSqMJZXkyNsxAtd/view?usp=drive_link" },
-            { title: "Video 4 [Android] — Upload latihan ke repo", href: "https://drive.google.com/file/d/1E2RslRgO4a7ZocEWe1_Ys2vlunMbmwQK/view?usp=drive_link" },
-            { title: "Video 5 [Android] — Cara upload tugas 01", href: "https://drive.google.com/file/d/1hYsvXrZxwrLqBSEcfblZkRH3-ADQ3TGB/view?usp=drive_link" },
+            // contoh bila sudah ada video
+            { title: "[Android] - Buat akun github", href: "https://drive.google.com/file/d/1caq8CZsSyz4xcimOfoHalAGbqPM_qds3/view?usp=drive_link" },
+            { title: "[Android] — Buat akun GitHub", href: "https://drive.google.com/file/d/1caq8CZsSyz4xcimOfoHalAGbqPM_qds3/view?usp=drive_link" },
+            { title: "[Android] — Buat repository", href: "https://drive.google.com/file/d/1PPHOH0RbwfeNPwo7weMQpwIn7A610TZM/view?usp=drive_link" },
+            { title: "[Android] — Setup text editor", href: "https://drive.google.com/file/d/1D0LwpX07fp9GHhicyxSqMJZXkyNsxAtd/view?usp=drive_link" },
+            { title: "[Android] — Upload latihan ke repo", href: "https://drive.google.com/file/d/1E2RslRgO4a7ZocEWe1_Ys2vlunMbmwQK/view?usp=drive_link" },
+            { title: "[Android] — Cara upload tugas 01", href: "https://drive.google.com/file/d/1hYsvXrZxwrLqBSEcfblZkRH3-ADQ3TGB/view?usp=drive_link" },
 
-            { title: "Video 1 [Desktop] — Buat akun GitHub", href: "https://drive.google.com/file/d/1AlqonUx-ua70RCU-WkNGs3EDR9gQomhf/view?usp=drive_link" },
-            { title: "Video 2 [Desktop] — Cara buat repository", href: "https://drive.google.com/file/d/18DrNjHajIX_LLzd1P8Q7yzkjcqBvsc16/view?usp=drive_link" },
-            { title: "Video 3 [Desktop] — Cara upload tugas ke repo", href: "https://drive.google.com/file/d/1VdkcBJ6LfnomlEYDd3uODigi_Z0Zy73i/view?usp=drive_link" },
+            { title: "[Desktop] — Buat akun GitHub", href: "https://drive.google.com/file/d/1AlqonUx-ua70RCU-WkNGs3EDR9gQomhf/view?usp=drive_link" },
+            { title: "[Desktop] — Cara buat repository", href: "https://drive.google.com/file/d/18DrNjHajIX_LLzd1P8Q7yzkjcqBvsc16/view?usp=drive_link" },
+            { title: "[Desktop] — Cara upload tugas ke repo", href: "https://drive.google.com/file/d/1VdkcBJ6LfnomlEYDd3uODigi_Z0Zy73i/view?usp=drive_link" },
         ],
     },
-    // Placeholder pertemuan berikutnya — tinggal ganti status & isi videos kalau siap
-    { id: "p2", title: "Praktikum 02 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p3", title: "Praktikum 03 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p4", title: "Praktikum 04 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p5", title: "Praktikum 05 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p6", title: "Praktikum 06 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p7", title: "Praktikum 07 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p8", title: "Praktikum 08 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p9", title: "Praktikum 09 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p10", title: "Praktikum 10 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p11", title: "Praktikum 11 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p12", title: "Praktikum 12 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p13", title: "Praktikum 13 — Coming soon", color: "bg-sky-500", videos: [] },
-    { id: "p14", title: "Praktikum 14 — Coming soon", color: "bg-sky-500", videos: [] },
+    {
+        id: "t2",
+        code: "T2",
+        title: "Tugas2 — HTML Basic",
+        color: "bg-sky-600",
+        instruction:
+            "Buatlah sebuah halaman HTML yang menerapakan materi pertemuan dua dengan tampilan halamannya sebagai berikut.",
+        reference: "https://exampllee.vercel.app/t2.html",
+        videos: [],
+    },
 ];
 
 export default function Tutorial() {
     const [open, setOpen] = useState(() => {
-        // default: buka pertemuan pertama
         const init = {};
-        MEETINGS.forEach((m) => (init[m.id] = false));
+        TASKS.forEach((m) => (init[m.id] = false));
         return init;
     });
 
@@ -55,56 +53,83 @@ export default function Tutorial() {
             <div className="border-b bg-gradient-to-r from-sky-50 to-white">
                 <div className="max-w-3xl mx-auto px-5 py-6">
                     <div className="inline-flex items-center gap-2 rounded-full bg-sky-100 text-sky-700 px-3 py-1 text-xs font-semibold">
-                        <i className="ri-folder-video-line" />
-                        Tutorial Tugas Praktikum
+                        <i className="ri-task-line" />
+                        Panduan Praktikum PemWeb01
                     </div>
-                    <h1 className="mt-2 text-2xl font-extrabold text-sky-700">Video Panduan</h1>
+                    <h1 className="mt-2 text-2xl font-extrabold text-sky-700">
+                        Instruksi Tugas per Pekan
+                    </h1>
                     <p className="text-sm text-gray-600">
-                        Kumpulan video tiap pertemuan. Gunakan sebagai panduan sebelum mengerjakan tugas.
+                        Baca instruksi, lalu kerjakan sesuai kode pekan (T1, T2, dst).
+                        Contoh tampilan bisa dilihat melalui link referensi.
                     </p>
                 </div>
             </div>
 
             {/* List Accordion */}
             <div className="max-w-3xl mx-auto px-4 py-6 space-y-3">
-                {MEETINGS.map((m) => (
-                    <section key={m.id} className="rounded-xl border border-sky-100 bg-white shadow-sm">
+                {TASKS.map((t) => (
+                    <section
+                        key={t.id}
+                        className="rounded-xl border border-sky-100 bg-white shadow-sm overflow-hidden"
+                    >
                         <button
                             type="button"
-                            onClick={() => toggle(m.id)}
+                            onClick={() => toggle(t.id)}
                             className="w-full flex items-center justify-between px-4 py-3"
                         >
                             <div className="flex items-center gap-3">
-                                <div className={`size-10 grid place-items-center rounded-lg text-white ${m.color}`}>
-                                    <i className="ri-folder-video-fill" />
+                                <div
+                                    className={`size-10 grid place-items-center rounded-lg text-white ${t.color}`}
+                                >
+                                    <span className="text-sm font-bold">{t.code}</span>
                                 </div>
                                 <div className="text-left">
-                                    <div className="font-semibold text-gray-800">{m.title}</div>
+                                    <div className="font-semibold text-gray-800">{t.title}</div>
                                     <div className="text-xs text-gray-500">
-                                        {m.videos.length > 0 ? `${m.videos.length} video` : "Belum ada video"}
+                                        {t.videos?.length > 0
+                                            ? `${t.videos.length} video available`
+                                            : "video not available"}
                                     </div>
                                 </div>
                             </div>
                             <i
-                                className={`ri-arrow-right-s-line text-xl text-gray-500 transition-transform ${open[m.id] ? "rotate-90" : ""
+                                className={`ri-arrow-right-s-line text-xl text-gray-500 transition-transform ${open[t.id] ? "rotate-90" : ""
                                     }`}
                             />
                         </button>
 
-                        {open[m.id] && (
-                            <div className="px-2 pb-3">
-                                {m.videos.length > 0 ? (
-                                    <ul className="space-y-1">
-                                        {m.videos.map((v, i) => (
+                        {open[t.id] && (
+                            <div className="px-4 pb-4">
+                                {/* Instruction */}
+                                <div className="rounded-lg border text-justify border-sky-100 bg-sky-50 text-sky-800 text-sm px-3 py-3 leading-relaxed">
+                                    <span className="font-semibold">{t.code} — Instruksi:</span>{" "}
+                                    <span>{t.instruction}</span>
+                                </div>
+
+                                {/* Reference link */}
+                                {t.reference && (
+                                    <div className="mt-3 text-sm">
+                                        Tampilan Halaman:{" "}
+                                        <a
+                                            href={t.reference}
+                                            rel="noopener noreferrer"
+                                            className="text-sky-600 underline"
+                                        >
+                                            Klik di sini
+                                        </a>
+                                    </div>
+                                )}
+
+                                {/* Videos */}
+                                {t.videos && t.videos.length > 0 && (
+                                    <ul className="mt-3 space-y-1">
+                                        {t.videos.map((v, i) => (
                                             <li key={i}>
                                                 <DropItem href={v.href}>{v.title}</DropItem>
                                             </li>
                                         ))}
                                     </ul>
-                                ) : (
-                                    <div className="mx-2 my-2 rounded-lg border bg-sky-50 text-sky-700 text-sm px-3 py-2">
-                                        Konten sedang disiapkan. Stay tuned! ✨
-                                    </div>
                                 )}
                             </div>
                         )}
@@ -113,7 +138,7 @@ export default function Tutorial() {
 
                 {/* Quick help */}
                 <div className="text-xs text-gray-500 pt-2">
-                    Tip: butuh panduan cepat? Cek juga menu <Link to="/tugas" className="text-sky-600 underline">Submit Tugas</Link>.
+                    kamu butuh video tutorial? eksplor sendiri lah yaa :v
                 </div>
             </div>
 

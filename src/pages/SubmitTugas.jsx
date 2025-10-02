@@ -250,26 +250,8 @@ export default function InputTugas() {
                                     <div><b className="text-sky-700">Nama:</b> {picked.name}</div>
                                 </div>
 
-                                <div className="flex gap-2 text-sm">
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveTab("link")}
-                                        className={`px-3 py-1 rounded ${activeTab === "link" ? "bg-sky-600 text-white" : "bg-gray-100"}`}
-                                    >
-                                        Link Repo
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveTab("file")}
-                                        className={`px-3 py-1 rounded ${activeTab === "file" ? "bg-sky-600 text-white" : "bg-gray-100"}`}
-                                    >
-                                        Upload Gambar
-                                    </button>
-                                </div>
-
-                                {activeTab === "link" ? (
                                     <div>
-                                        <label className="text-sm text-gray-800">Link repository</label>
+                                        <label className="text-sm text-gray-800">Link repo/gdrive</label>
                                         <input
                                             type="url"
                                             placeholder="https://github.com/username/repo"
@@ -279,23 +261,7 @@ export default function InputTugas() {
                                             required
                                         />
                                     </div>
-                                ) : (
-                                    <div>
-                                        <label className="text-sm text-gray-800">File gambar (jpg/png)</label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            className="mt-1"
-                                            onChange={(e) => setFile(e.target.files?.[0] || null)}
-                                            required
-                                        />
-                                        {file && (
-                                            <div className="mt-2 text-xs text-gray-600">
-                                                File: <b>{file.name}</b> ({Math.round(file.size / 1024)} KB)
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
+                                
 
                                 <button
                                     type="submit"
