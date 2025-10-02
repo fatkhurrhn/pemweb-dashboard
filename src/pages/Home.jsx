@@ -90,6 +90,8 @@ export default function Home() {
                             <i className="ri-upload-cloud-2-line mr-2" /> Tugas
                         </Link>
 
+                        
+
                         <Link
                             to="/login"
                             className="inline-flex items-center px-3 py-2 rounded-lg 
@@ -214,13 +216,13 @@ export default function Home() {
                                     </p>
                                 </Link>
                                 <Link
-                                    to="/rekap-presensi"
+                                    to="/intruksi"
                                     className="group p-4 rounded-xl border hover:border-emerald-300 hover:bg-emerald-50/50 transition"
                                 >
                                     <i className="ri-table-line text-2xl text-emerald-600" />
-                                    <div className="mt-2 font-semibold">Rekap</div>
+                                    <div className="mt-2 font-semibold">Intruksi</div>
                                     <p className="text-xs text-gray-600">
-                                        Lihat status di setiap pertemuan.
+                                        Kumpulan intruksi tugas praktikum
                                     </p>
                                 </Link>
                                 <Link
