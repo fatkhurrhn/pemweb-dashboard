@@ -7,11 +7,11 @@ const TASKS = [
     {
         id: "t1",
         code: "T1",
-        title: "Tugas1 — Introduction HTML",
+        title: "Introduction HTML",
         color: "bg-sky-600",
         instruction:
             "Buatlah akun github, install code editor versi mobile, dan buat satu file bernama tugas1.html yang isinya adalah stukrur html, kemudian up ke repo lalu kirimkan link repository atau ss code editornya lalu kirim!",
-        
+
         videos: [
             // contoh bila sudah ada video
             { title: "[Android] - Buat akun github", href: "https://drive.google.com/file/d/1caq8CZsSyz4xcimOfoHalAGbqPM_qds3/view?usp=drive_link" },
@@ -29,11 +29,21 @@ const TASKS = [
     {
         id: "t2",
         code: "T2",
-        title: "Tugas2 — HTML Basic",
+        title: "HTML Basic",
         color: "bg-sky-600",
         instruction:
             "Buatlah sebuah halaman HTML yang menerapakan materi pertemuan dua dengan tampilan halamannya sebagai berikut.",
         reference: "https://exampllee.vercel.app/t2.html",
+        videos: [],
+    },
+    {
+        id: "t3",
+        code: "T3",
+        title: "HTML Images, Tables & Links",
+        color: "bg-sky-600",
+        instruction: "coming soon",
+        // instruction: "Buatlah sebuah halaman HTML seperti refrensi dibawah ini yang menerapakan materi pertemuan tiga. Tampilan/layout/bagian2nya harus sama, sedangkan narasinya boleh berbeda",
+        // reference: "https://exampllee.vercel.app/t3.html",
         videos: [],
     },
 ];
@@ -57,11 +67,14 @@ export default function Tutorial() {
                         Panduan Praktikum PemWeb01
                     </div>
                     <h1 className="mt-2 text-2xl font-extrabold text-sky-700">
-                        Instruksi Tugas per Pekan
+                        Instruksi Tugas Per Pekan
                     </h1>
                     <p className="text-sm text-gray-600">
                         Baca instruksi, lalu kerjakan sesuai kode pekan (T1, T2, dst).
-                        Contoh tampilan bisa dilihat melalui link referensi.
+                        Untuk assets seperti foto dll bisa
+                        <Link to="https://exampllee.vercel.app/" target="_blank">
+                            <span className="underline text-blue font-bold"> klik link ini!!!</span>
+                        </Link>
                     </p>
                 </div>
             </div>

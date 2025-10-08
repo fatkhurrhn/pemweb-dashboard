@@ -1,67 +1,9 @@
 // src/pages/Home.jsx
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 
 export default function Home() {
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-    const [isInstalled, setIsInstalled] = useState(false);
-
-    // Tangkap event beforeinstallprompt dan status terpasang
-    useEffect(() => {
-        function handleBIP(e) {
-            e.preventDefault();
-            setDeferredPrompt(e);
-        }
-        function handleAppInstalled() {
-            setIsInstalled(true);
-            setDeferredPrompt(null);
-        }
-
-        const standalone =
-            window.matchMedia?.("(display-mode: standalone)")?.matches ||
-            window.navigator.standalone === true;
-        if (standalone) setIsInstalled(true);
-
-        window.addEventListener("beforeinstallprompt", handleBIP);
-        window.addEventListener("appinstalled", handleAppInstalled);
-        return () => {
-            window.removeEventListener("beforeinstallprompt", handleBIP);
-            window.removeEventListener("appinstalled", handleAppInstalled);
-        };
-    }, []);
-
-    const showInstallHint = () => {
-        // Deteksi iOS Safari
-        const ua = navigator.userAgent || "";
-        const isIOS = /iP(hone|od|ad)/.test(ua);
-        const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
-
-        if (isInstalled) {
-            alert("Practix sudah terpasang di perangkat kamu. Buka dari Home Screen / App list ya!");
-            return;
-        }
-
-        if (isIOS && isSafari) {
-            alert("Untuk menginstal di iOS: buka menu Share ➜ Add to Home Screen.");
-            return;
-        }
-
-        alert("Jika tombol install tidak muncul, cari ikon 'Install app' di address bar browser (Chrome/Edge) atau buka menu ⋮ lalu pilih Install app.");
-    };
-
-    const handleInstall = async () => {
-        // Kalau event tersedia → munculkan prompt
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log("User install choice:", outcome);
-            setDeferredPrompt(null);
-            return;
-        }
-        // Fallback: tampilkan hint meski tombol tetap ada
-        showInstallHint();
-    };
 
     // Label dinamis biar jelas statusnya
     return (
@@ -78,6 +20,12 @@ export default function Home() {
 
                     <div className="flex items-center gap-2">
                         <Link
+                            to="https://exampllee.vercel.app/"
+                            className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
+                        >
+                            Login
+                        </Link>
+                        <Link
                             to="/checkin"
                             className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
                         >
@@ -93,12 +41,12 @@ export default function Home() {
                         
 
                         <Link
-                            to="/login"
+                            to="https://exampllee.vercel.app/"
                             className="inline-flex items-center px-3 py-2 rounded-lg 
              bg-white text-gray-900 border border-gray-300 
              hover:bg-gray-100 hover:border-gray-400 transition"
                         >
-                            <i className="ri-shield-user-line mr-2" /> Login
+                            <i className="ri-book-marked-line mr-2" /> Assets
                         </Link>
                     </div>
                 </div>
@@ -126,18 +74,17 @@ export default function Home() {
                         <div className="mt-6 flex flex-wrap gap-3">
                             {/* --- Mobile Layout --- */}
                             {/* Tombol Install (SELALU ADA) */}
-                            <button
-                                onClick={handleInstall}
+                            <Link to="/rekap-presensi"
                                 className="inline-flex items-center justify-center gap-2 
                px-3 py-2 text-sm rounded-lg bg-sky-600 text-white 
                hover:opacity-90 flex-1 sm:hidden"
                             >
                                 <i className="ri-user-follow-line" /> Rekap Presensi
-                            </button>
+                            </Link>
 
                             {/* Video Tutorial (ganti Pertanyaan) */}
                             <Link
-                                to="/tutorial"
+                                to="/rekap-tugas"
                                 className="inline-flex items-center justify-center gap-2 
                px-3 py-2 text-sm rounded-lg border hover:bg-gray-50 
                flex-1 sm:hidden"
