@@ -20,7 +20,7 @@ export default function Home() {
 
                     <div className="flex items-center gap-2">
                         <Link
-                            to="https://exampllee.vercel.app/"
+                            to="/login"
                             className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
                         >
                             Login
