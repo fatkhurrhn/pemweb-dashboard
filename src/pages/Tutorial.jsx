@@ -41,9 +41,8 @@ const TASKS = [
         code: "T3",
         title: "HTML Images, Tables & Links",
         color: "bg-sky-600",
-        instruction: "coming soon",
-        // instruction: "Buatlah sebuah halaman HTML seperti refrensi dibawah ini yang menerapakan materi pertemuan tiga. Tampilan/layout/bagian2nya harus sama, sedangkan narasinya boleh berbeda",
-        // reference: "https://exampllee.vercel.app/t3.html",
+        instruction: "Buatlah sebuah halaman HTML seperti refrensi dibawah ini yang menerapakan materi pertemuan tiga. Tampilan/layout/bagian2nya harus sama, sedangkan narasinya boleh berbeda",
+        reference: "https://exampllee.vercel.app/t3.html",
         videos: [],
     },
 ];
