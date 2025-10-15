@@ -277,7 +277,8 @@ export default function DashboardTugas() {
                         </div>
                         {/* <div className="flex flex-wrap gap-2">
                             <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
-                                Total <b>{total}</b>
+                                Total <b>{total}</b>y
+                                
                             </span>
                             <span className="px-3 py-1 rounded-full bg-amber-500 text-white text-sm">
                                 Review <b>{review}</b>
