@@ -330,7 +330,7 @@ export default function DashboardTugas() {
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-1 text-sky-600 underline"
                                                 >
-                                                    <i className="ri-external-link-line"></i> Repo
+                                                    <i className="ri-external-link-line"></i> Open Here
                                                 </a>
                                             )}
                                             {s.imageUrl && (

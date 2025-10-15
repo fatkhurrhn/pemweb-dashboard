@@ -45,6 +45,18 @@ const TASKS = [
         reference: "https://exampllee.vercel.app/t3.html",
         videos: [],
     },
+    {
+        id: "t4",
+        code: "T4",
+        title: "HTML Div, Inframes & Layout",
+        color: "bg-sky-600",
+
+        instruction : "coming soon",
+
+        // instruction: "Buatlah sebuah halaman html dengan menerapkan materi yang diberikan dan halamannya harus mirip dengan refrensi dibawah ini! JANGAN LUPA UNTUK MERUBAH VIEW TAMPILANNYA MENJADI VIEW DESKTOP!",
+        // reference: "https://exampllee.vercel.app/t4.html",
+        // videos: [],
+    },
 ];
 
 export default function Tutorial() {
@@ -150,7 +162,10 @@ export default function Tutorial() {
 
                 {/* Quick help */}
                 <div className="text-xs text-gray-500 pt-2">
-                    kamu butuh video tutorial? eksplor sendiri lah yaa :v
+                    Note p4:  <Link to="http://pemweb01.vercel.app/style-p4.css"><b>buka dan salin css ini</b></Link> 
+                </div>
+                <div className="text-xs text-gray-500 -pt-3">
+                    Note t4:  <Link to="#"><b>coming soon</b></Link> 
                 </div>
             </div>
 
