@@ -39,7 +39,7 @@ export default function RekapTugas() {
             label: `P${idx + 1}`,
             title: s.title || `Sesi ${idx + 1}`,
             date: fmtDate(s.date),
-            submissions: s.submissions || {}, // map NIM -> {link, imageUrl, method}
+            submissions: s.submissions || {}, // map NIM -> {link, imageUrl, method, status}
         }));
     }, [sessions]);
 
@@ -78,18 +78,28 @@ export default function RekapTugas() {
                 </div>
 
                 {/* Legend */}
-                <div className="text-xs text-gray-600">
-                    <span className="inline-flex items-center gap-1 mr-3">
-                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-green-600 text-white text-[13px]">✓</span>
-                        Selesai
+                <div className="text-xs text-gray-600 space-x-3">
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-green-600 text-white text-[13px]">
+                            ✓
+                        </span>
+                        Terima
                     </span>
                     <span className="inline-flex items-center gap-1">
-                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-sky-50 text-sky-600 ring-1 ring-sky-100 text-[13px]">—</span>
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-amber-500 text-white text-[13px]">
+                            ⧗
+                        </span>
+                        Review
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-sky-50 text-sky-600 ring-1 ring-sky-100 text-[13px]">
+                            —
+                        </span>
                         Kosong
                     </span>
                 </div>
 
-                {/* Tabel Rekap — seluruh tabel bisa scroll ke kanan */}
+                {/* Tabel Rekap */}
                 <div className="overflow-x-auto border border-sky-100 rounded-xl bg-white shadow-sm">
                     <table className="w-max min-w-full text-sm">
                         <thead className="bg-sky-50">
@@ -120,8 +130,27 @@ export default function RekapTugas() {
                                     {/* Sel per sesi */}
                                     {columns.map((c) => {
                                         const sub = c.submissions[r.nim] || {};
-                                        // ✅ Anggap selesai jika ada link / imageUrl / manual
-                                        const has = !!(sub.link || sub.imageUrl || (sub.method === "manual"));
+                                        // 🟠 Status review atau terima
+                                        const status = sub.status
+                                            ? sub.status
+                                            : sub.link || sub.imageUrl
+                                                ? "review"
+                                                : "kosong";
+
+                                        const color =
+                                            status === "terima"
+                                                ? "bg-green-600 text-white"
+                                                : status === "review"
+                                                    ? "bg-amber-500 text-white"
+                                                    : "bg-sky-50 text-sky-600 ring-1 ring-sky-100";
+
+                                        const icon =
+                                            status === "terima"
+                                                ? "✓"
+                                                : status === "review"
+                                                    ? "⧗"
+                                                    : "—";
+
                                         return (
                                             <td
                                                 key={c.key}
@@ -129,10 +158,9 @@ export default function RekapTugas() {
                                                 title={c.title}
                                             >
                                                 <div
-                                                    className={`inline-grid place-items-center w-7 h-7 rounded ${has ? "bg-green-600 text-white" : "bg-sky-50 text-sky-600 ring-1 ring-sky-100"
-                                                        }`}
+                                                    className={`inline-grid place-items-center w-7 h-7 rounded ${color}`}
                                                 >
-                                                    {has ? "✓" : "—"}
+                                                    {icon}
                                                 </div>
                                             </td>
                                         );
@@ -142,7 +170,10 @@ export default function RekapTugas() {
 
                             {rows.length === 0 && (
                                 <tr>
-                                    <td colSpan={1 + columns.length} className="text-center p-6 text-gray-500">
+                                    <td
+                                        colSpan={1 + columns.length}
+                                        className="text-center p-6 text-gray-500"
+                                    >
                                         Tidak ada data (cek kata kunci pencarian).
                                     </td>
                                 </tr>
@@ -151,7 +182,7 @@ export default function RekapTugas() {
                     </table>
                 </div>
 
-                {/* Modal Preview Gambar (disiapkan, if needed nanti tinggal panggil setPreviewUrl(url)) */}
+                {/* Modal Preview Gambar */}
                 {previewUrl && (
                     <div
                         className="fixed inset-0 bg-black/70 z-50 grid place-items-center p-4"
