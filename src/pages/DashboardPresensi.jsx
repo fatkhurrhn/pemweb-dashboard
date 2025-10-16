@@ -17,8 +17,6 @@ import { Link } from "react-router-dom";
 // ====== ROSTER (NIM -> NAMA) ======
 const ROSTER = [
     ["110121112", "MUHAMMAD SYAFIQ RIZQ JIHAD"],
-    ["110122318", "MUHAMMAD AKMAL"],
-    ["110123021", "FAHMI HIBATULLAH"],
     ["110125003", "AIMAN AL MAJIID"],
     ["110125006", "GALIH SURYAHADI"],
     ["110125007", "MUHAMMAD ZIDNI FADHILAH"],
