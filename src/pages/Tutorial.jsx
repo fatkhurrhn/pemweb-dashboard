@@ -51,11 +51,11 @@ const TASKS = [
         title: "HTML Div, Inframes & Layout",
         color: "bg-sky-600",
 
-        instruction : "coming soon",
+        // instruction : "coming soon",
 
-        // instruction: "Buatlah sebuah halaman html dengan menerapkan materi yang diberikan dan halamannya harus mirip dengan refrensi dibawah ini! JANGAN LUPA UNTUK MERUBAH VIEW TAMPILANNYA MENJADI VIEW DESKTOP!",
-        // reference: "https://exampllee.vercel.app/t4.html",
-        // videos: [],
+        instruction: "Buatlah sebuah halaman html dengan menerapkan materi yang diberikan dan halamannya harus mirip dengan refrensi dibawah ini! JANGAN LUPA UNTUK MERUBAH VIEW TAMPILANNYA MENJADI VIEW DESKTOP!",
+        reference: "https://exampllee.vercel.app/t4.html",
+        videos: [],
     },
 ];
 
@@ -164,9 +164,9 @@ export default function Tutorial() {
                 <div className="text-xs text-gray-500 pt-2">
                     Note p4:  <Link to="http://pemweb01.vercel.app/style-p4.css"><b>buka dan salin css ini</b></Link> 
                 </div>
-                {/* <div className="text-xs text-gray-500 -pt-3">
-                    Note t4:  <Link to="#"><b>coming soon</b></Link> 
-                </div> */}
+                <div className="text-xs text-gray-500 -pt-3">
+                    Note t4:  <Link to="http://pemweb01.vercel.app/style-t4.css"><b>coming soon</b></Link> 
+                </div>
             </div>
 
             <BottomNav />
