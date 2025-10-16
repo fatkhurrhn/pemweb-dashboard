@@ -161,11 +161,11 @@ export default function Tutorial() {
                 ))}
 
                 {/* Quick help */}
-                <div className="text-xs text-gray-500 pt-2">
+                {/* <div className="text-xs text-gray-500 pt-2">
                     Note p4:  <Link to="http://pemweb01.vercel.app/style-p4.css"><b>buka dan salin css ini</b></Link> 
-                </div>
+                </div> */}
                 <div className="text-xs text-gray-500 -pt-3">
-                    Note t4:  <Link to="http://pemweb01.vercel.app/style-t4.css"><b>coming soon</b></Link> 
+                    Note t4:  <Link to="http://pemweb01.vercel.app/style-t4.css"><b>buka dan salin css ini</b></Link> 
                 </div>
             </div>
 
