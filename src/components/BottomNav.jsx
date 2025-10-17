@@ -16,8 +16,9 @@ export default function BottomNav() {
     const navItems = [
         { name: "Home", path: "/", icon: "ri-home-3" },
         { name: "Presensi", path: "/checkin", icon: "ri-qr-scan-2" },
-        { name: "Tugas", path: "/tugas", icon: "ri-upload-cloud-2" },
         { name: "Intruksi", path: "/intruksi", icon: "ri-folder-2" },
+        { name: "Rekap P", path: "/rekap-presensi", icon: "ri-file-list-3" },
+        { name: "Rekap T", path: "/rekap-tugas", icon: "ri-file-list-3" },
     ];
 
     // Rekap aktif untuk dua sub: /rekap-presensi, /rekap-tugas
@@ -60,8 +61,8 @@ export default function BottomNav() {
                         );
                     })}
 
-                    {/* Rekap (Others) */}
-                    <button
+             
+                    {/* <button
                         onClick={() => setShowSheet(true)}
                         className="flex flex-col items-center text-xs focus:outline-none"
                         aria-expanded={showSheet}
@@ -74,7 +75,7 @@ export default function BottomNav() {
                         <span className={`${rekapActive ? "text-sky-600" : "text-gray-400"} text-[11px]`}>
                             Rekap
                         </span>
-                    </button>
+                    </button> */}
                 </nav>
             </div>
 

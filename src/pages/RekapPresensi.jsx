@@ -39,11 +39,10 @@ export default function RekapPresensi() {
 
     // Realtime semua sesi, urut lama -> baru
     useEffect(() => {
-        const qy = query(collection(db, "presensi"), orderBy("startAt", "desc"));
+        const qy = query(collection(db, "presensi"), orderBy("startAt", "asc")); // ASC untuk urutan normal
         const unsub = onSnapshot(qy, (snap) => {
             const arr = [];
             snap.forEach((d) => arr.push({ id: d.id, ...d.data() }));
-            arr.reverse(); // lama -> baru
             setSessions(arr);
             setLoading(false);
         });
@@ -86,117 +85,143 @@ export default function RekapPresensi() {
 
     // Auto scroll ke kanan kalau ada sesi baru
     useEffect(() => {
-        if (tableRef.current) {
+        if (tableRef.current && sessions.length > 0) {
             tableRef.current.scrollLeft = tableRef.current.scrollWidth;
         }
-    }, [columns.length]);
+    }, [sessions.length]);
 
     return (
         <div className="min-h-screen bg-white pb-16">
-            <div className="mx-auto max-w-6xl space-y-4 px-4 pt-5">
+            <div className="px-4 max-w-6xl mx-auto space-y-5 pt-5">
                 {/* Header */}
-                <header className="flex items-center justify-between flex-wrap gap-3">
+                <header className="flex items-center justify-between gap-3 flex-wrap">
                     <div className="space-y-0.5">
                         <h1 className="text-2xl font-extrabold text-sky-700">Rekap Presensi</h1>
                         <p className="text-sm text-gray-600">
                             Total Mahasiswa: <b>{roster.length}</b>
                         </p>
                     </div>
-
-                    {/* QnA di kanan */}
                     <Qna />
-
-                    {/* Search nama */}
-                    <div className="w-full sm:w-72">
-                        <div className="relative mt-1">
-                            <input
-                                className="w-full border border-sky-100 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-600"
-                                placeholder="Cari nama…"
-                                value={nameQuery}
-                                onChange={(e) => setNameQuery(e.target.value)}
-                            />
-                            <i className="ri-search-line absolute right-3 top-1/2 -translate-y-1/2 text-sky-600" />
-                        </div>
-                    </div>
                 </header>
 
-                {/* Konten */}
+                {/* Search */}
+                <div className="relative">
+                    <input
+                        className="w-full border border-sky-100 rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-sky-200 focus:border-sky-600"
+                        placeholder="Ketik nama kamu"
+                        value={nameQuery}
+                        onChange={(e) => setNameQuery(e.target.value)}
+                    />
+                    <i className="ri-search-line absolute right-3 top-1/2 -translate-y-1/2 text-sky-600" />
+                </div>
+
+                {/* Legend */}
+                <div className="text-xs text-gray-600 flex flex-wrap gap-4">
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-green-600 text-white text-[13px] font-bold">H</span>
+                        Hadir
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-amber-500 text-white text-[13px] font-bold">I</span>
+                        Izin
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-yellow-600 text-white text-[13px] font-bold">S</span>
+                        Sakit
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-red-600 text-white text-[13px] font-bold">A</span>
+                        Alpha
+                    </span>
+                    <span className="inline-flex items-center gap-1">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-sky-50 text-sky-600 ring-1 ring-sky-100 text-[13px]">—</span>
+                        Belum Isi
+                    </span>
+                </div>
+
+                {/* Tabel Rekap — scroll horizontal */}
                 {loading ? (
-                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm text-sky-700">Memuat…</div>
+                    <div className="p-8 text-center text-gray-500 border border-sky-100 rounded-xl bg-white shadow-sm">
+                        Memuat data presensi...
+                    </div>
                 ) : sessions.length === 0 ? (
-                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm">Belum ada sesi presensi.</div>
-                ) : roster.length === 0 ? (
-                    <div className="p-4 border border-sky-100 rounded-xl bg-white shadow-sm">Belum ada data mahasiswa.</div>
+                    <div className="p-8 text-center text-gray-500 border border-sky-100 rounded-xl bg-white shadow-sm">
+                        Belum ada sesi presensi.
+                    </div>
                 ) : (
-                    <div className="relative">
-                        {/* Wrapper scroll horizontal */}
+                    <div className="space-y-3">
                         <div
                             ref={tableRef}
-                            className="overflow-x-auto rounded-xl border border-sky-100 bg-white shadow-sm"
+                            className="overflow-x-auto border border-sky-100 rounded-xl bg-white shadow-sm"
                         >
-                            <table className="min-w-full text-sm">
-                                <thead className="bg-sky-50 sticky top-0 z-10">
+                            <table className="w-max min-w-full text-sm">
+                                <thead className="bg-sky-50">
                                     <tr>
-                                        {/* Kolom nama sticky */}
-                                        <th className="sticky left-0 z-20 bg-sky-50 border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700">
+                                        <th className="border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700 whitespace-nowrap">
                                             Nama Mahasiswa
                                         </th>
                                         {columns.map((c) => (
                                             <th
                                                 key={c.key}
-                                                className="border border-sky-100 px-3 py-3 text-center font-semibold text-sky-700"
+                                                className="border border-sky-100 px-3 py-3 text-center font-semibold text-sky-700 whitespace-nowrap"
                                                 title={c.title}
                                             >
-                                                {c.pLabel}
+                                                <div>{c.pLabel}</div>
                                             </th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filteredRoster.map((stu) => (
-                                        <tr key={stu.nim} className="odd:bg-white even:bg-sky-50/40">
-                                            {/* Nama sticky */}
-                                            <td className="sticky left-0 z-10 bg-inherit border border-sky-100 px-3 py-2 text-gray-800">
+                                    {filteredRoster.map((stu, index) => (
+                                        <tr key={stu.nim} className={index % 2 === 0 ? "bg-white" : "bg-sky-50/40"}>
+                                            {/* Nama - ikut scroll horizontal */}
+                                            <td className="border border-sky-100 px-3 py-2 text-gray-800 whitespace-nowrap">
                                                 {stu.name}
                                             </td>
 
-                                            {/* Per sesi */}
+                                            {/* Sel per sesi */}
                                             {columns.map((c) => {
                                                 const status = sessions.find((s) => s.id === c.id)?.attendances?.[stu.nim]?.status;
                                                 const letter = STATUS_TO_LETTER[status];
                                                 const cls = LETTER_CLASS[letter || ""];
-                                                const title = status
+                                                const tooltipText = status
                                                     ? `${status.toUpperCase()} — ${c.title}`
                                                     : `Belum isi — ${c.title}`;
+
                                                 return (
                                                     <td
                                                         key={c.key + "_" + stu.nim}
-                                                        className="border border-sky-100 px-2 py-2 text-center"
-                                                        title={title}
+                                                        className="border border-sky-100 px-2 py-2 text-center whitespace-nowrap"
+                                                        title={tooltipText}
                                                     >
-                                                        <span
-                                                            className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-bold ${cls}`}
-                                                        >
-                                                            {letter}
-                                                        </span>
+                                                        <div className={`inline-grid place-items-center w-7 h-7 rounded ${cls}`}>
+                                                            {letter || "—"}
+                                                        </div>
                                                     </td>
                                                 );
                                             })}
                                         </tr>
                                     ))}
+
+                                    {filteredRoster.length === 0 && (
+                                        <tr>
+                                            <td colSpan={1 + columns.length} className="text-center p-6 text-gray-500">
+                                                Tidak ada data (cek kata kunci pencarian).
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
 
-                        {/* Info jumlah baris */}
-                        <div className="text-xs text-gray-500 mt-2">
+                        {/* Info jumlah */}
+                        <div className="text-xs text-gray-500 text-center">
                             Menampilkan {filteredRoster.length} dari {roster.length} mahasiswa • {columns.length} pertemuan
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Bottom nav */}
             <BottomNav />
         </div>
     );
