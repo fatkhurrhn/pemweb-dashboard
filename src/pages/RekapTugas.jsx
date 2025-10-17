@@ -39,13 +39,13 @@ export default function RekapTugas() {
             label: `P${idx + 1}`,
             title: s.title || `Sesi ${idx + 1}`,
             date: fmtDate(s.date),
-            submissions: s.submissions || {}, // map NIM -> {link, imageUrl, method, status}
+            submissions: s.submissions || {}, // map NIM -> {link, imageUrl, method, name, submittedAt}
         }));
     }, [sessions]);
 
     // Roster -> rows dasar + filter nama
     const rows = useMemo(() => {
-        const base = ROSTER.map(([nim, name]) => ({ nim, name }));
+        const base = ROSTER.map(([no, nim, name, githubUrl]) => ({ no, nim, name, githubUrl }));
         const q = search.trim().toLowerCase();
         if (!q) return base;
         return base.filter((r) => r.name.toLowerCase().includes(q));
@@ -78,32 +78,28 @@ export default function RekapTugas() {
                 </div>
 
                 {/* Legend */}
-                <div className="text-xs text-gray-600 space-x-3">
-                    <span className="inline-flex items-center gap-1">
-                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-green-600 text-white text-[13px]">
-                            ✓
-                        </span>
-                        Terima
+                <div className="text-xs text-gray-600">
+                    <span className="inline-flex items-center gap-1 mr-3">
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-green-600 text-white text-[13px]">✓</span>
+                        Selesai
                     </span>
                     <span className="inline-flex items-center gap-1">
-                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-amber-500 text-white text-[13px]">
-                            ⧗
-                        </span>
-                        Review
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-sky-50 text-sky-600 ring-1 ring-sky-100 text-[13px]">
-                            —
-                        </span>
+                        <span className="inline-grid place-items-center w-6 h-6 rounded bg-sky-50 text-sky-600 ring-1 ring-sky-100 text-[13px]">—</span>
                         Kosong
                     </span>
                 </div>
 
-                {/* Tabel Rekap */}
+                {/* Tabel Rekap — seluruh tabel bisa scroll ke kanan */}
                 <div className="overflow-x-auto border border-sky-100 rounded-xl bg-white shadow-sm">
                     <table className="w-max min-w-full text-sm">
                         <thead className="bg-sky-50">
                             <tr>
+                                <th className="border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700 whitespace-nowrap">
+                                    No
+                                </th>
+                                <th className="border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700 whitespace-nowrap">
+                                    NIM
+                                </th>
                                 <th className="border border-sky-100 px-3 py-3 text-left font-semibold text-sky-700 whitespace-nowrap">
                                     Nama Mahasiswa
                                 </th>
@@ -114,7 +110,6 @@ export default function RekapTugas() {
                                         title={`${c.title} • ${c.date}`}
                                     >
                                         <div>{c.label}</div>
-                                        <div className="text-[11px] text-gray-500 truncate max-w-[120px]"></div>
                                     </th>
                                 ))}
                             </tr>
@@ -122,6 +117,14 @@ export default function RekapTugas() {
                         <tbody>
                             {rows.map((r) => (
                                 <tr key={r.nim} className="odd:bg-white even:bg-sky-50/40">
+                                    {/* No */}
+                                    <td className="border border-sky-100 px-3 py-2 text-gray-800 whitespace-nowrap text-center">
+                                        {r.no}
+                                    </td>
+                                    {/* NIM */}
+                                    <td className="border border-sky-100 px-3 py-2 text-gray-800 whitespace-nowrap">
+                                        {r.nim}
+                                    </td>
                                     {/* Nama */}
                                     <td className="border border-sky-100 px-3 py-2 text-gray-800 whitespace-nowrap">
                                         {r.name}
@@ -130,37 +133,23 @@ export default function RekapTugas() {
                                     {/* Sel per sesi */}
                                     {columns.map((c) => {
                                         const sub = c.submissions[r.nim] || {};
-                                        // 🟠 Status review atau terima
-                                        const status = sub.status
-                                            ? sub.status
-                                            : sub.link || sub.imageUrl
-                                                ? "review"
-                                                : "kosong";
-
-                                        const color =
-                                            status === "terima"
-                                                ? "bg-green-600 text-white"
-                                                : status === "review"
-                                                    ? "bg-amber-500 text-white"
-                                                    : "bg-sky-50 text-sky-600 ring-1 ring-sky-100";
-
-                                        const icon =
-                                            status === "terima"
-                                                ? "✓"
-                                                : status === "review"
-                                                    ? "⧗"
-                                                    : "—";
-
+                                        // ✅ FIX: Anggap selesai jika ada link / imageUrl / method manual
+                                        const has = !!(sub.link || sub.imageUrl || sub.method === "manual");
+                                        const tooltipText = has 
+                                            ? `Selesai • ${sub.method === "manual" ? "Manual" : "Upload"} • ${sub.submittedAt ? fmtDate(sub.submittedAt) : ""}`
+                                            : "Belum mengumpulkan";
+                                        
                                         return (
                                             <td
                                                 key={c.key}
                                                 className="border border-sky-100 px-2 py-1 text-center whitespace-nowrap"
-                                                title={c.title}
+                                                title={tooltipText}
                                             >
                                                 <div
-                                                    className={`inline-grid place-items-center w-7 h-7 rounded ${color}`}
+                                                    className={`inline-grid place-items-center w-7 h-7 rounded ${has ? "bg-green-600 text-white" : "bg-sky-50 text-sky-600 ring-1 ring-sky-100"
+                                                        }`}
                                                 >
-                                                    {icon}
+                                                    {has ? "✓" : "—"}
                                                 </div>
                                             </td>
                                         );
@@ -170,10 +159,7 @@ export default function RekapTugas() {
 
                             {rows.length === 0 && (
                                 <tr>
-                                    <td
-                                        colSpan={1 + columns.length}
-                                        className="text-center p-6 text-gray-500"
-                                    >
+                                    <td colSpan={3 + columns.length} className="text-center p-6 text-gray-500">
                                         Tidak ada data (cek kata kunci pencarian).
                                     </td>
                                 </tr>
@@ -182,7 +168,12 @@ export default function RekapTugas() {
                     </table>
                 </div>
 
-                {/* Modal Preview Gambar */}
+                {/* Info tambahan */}
+                {/* <div className="text-xs text-gray-500 text-center">
+                    <p>Keterangan: ✓ = Tugas selesai (upload link/gambar atau ditandai manual oleh asdos)</p>
+                </div> */}
+
+                {/* Modal Preview Gambar (disiapkan, if needed nanti tinggal panggil setPreviewUrl(url)) */}
                 {previewUrl && (
                     <div
                         className="fixed inset-0 bg-black/70 z-50 grid place-items-center p-4"

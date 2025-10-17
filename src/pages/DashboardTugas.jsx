@@ -18,8 +18,7 @@ import { Link } from "react-router-dom";
 // warna badge status tugas
 const STATUS_BADGE = {
     kosong: "bg-gray-200 text-gray-800",
-    review: "bg-amber-500 text-white",
-    diterima: "bg-green-600 text-white",
+    selesai: "bg-green-600 text-white",
 };
 
 // helper format tanggal
@@ -34,17 +33,18 @@ export default function DashboardTugas() {
     const [sessions, setSessions] = useState([]);
     const [activeId, setActiveId] = useState("");
     const [active, setActive] = useState(null);
+    const [activeTab, setActiveTab] = useState("fathur"); // Tab aktif: fathur atau riyan
 
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [form, setForm] = useState({ title: "", date: "", status: "draft" });
 
     const [previewUrl, setPreviewUrl] = useState(null);
-    const [search, setSearch] = useState("");
 
+    // --- BUGFIX: jaga activeId agar tidak loncat saat snapshot reorder ---
     const firstLoadDone = useRef(false);
 
-    // listen semua sesi
+    // listen semua sesi (urut terbaru dulu)
     useEffect(() => {
         const qy = query(collection(db, "tugas"), orderBy("date", "desc"));
         const unsub = onSnapshot(qy, (snap) => {
@@ -53,11 +53,14 @@ export default function DashboardTugas() {
             setSessions(arr);
 
             setActiveId((prev) => {
+                // kalau belum pernah set sama sekali (first load) → pakai pertama
                 if (!firstLoadDone.current) {
                     firstLoadDone.current = true;
-                    return prev || arr[0]?.id || "";
+                    return prev || (arr[0]?.id || "");
                 }
+                // kalau sebelumnya sudah ada dan masih ada di list → pertahankan
                 if (prev && arr.some((s) => s.id === prev)) return prev;
+                // kalau sesi sebelumnya hilang (mis: dihapus) → fallback ke pertama
                 return arr[0]?.id || "";
             });
         });
@@ -93,6 +96,7 @@ export default function DashboardTugas() {
                 createdAt: serverTimestamp(),
                 submissions: {},
             });
+            // set aktif ke sesi baru yang barusan dibuat
             setActiveId(ref.id);
         }
 
@@ -107,24 +111,22 @@ export default function DashboardTugas() {
     }
 
     // ====== Aksi manual per mahasiswa ======
-    async function setTerimaManual(nim, name) {
+    async function setSelesaiManual(nim, name) {
         if (!active) return;
         const path = `submissions.${nim}`;
-        const current = active.submissions?.[nim] || {};
-        // pertahankan link/imageUrl jika ada
         await updateDoc(doc(db, "tugas", active.id), {
             [`${path}.name`]: name,
-            [`${path}.link`]: current.link || null,
-            [`${path}.imageUrl`]: current.imageUrl || null,
+            [`${path}.link`]: null,
+            [`${path}.imageUrl`]: null,
             [`${path}.submittedAt`]: serverTimestamp(),
             [`${path}.method`]: "manual",
-            [`${path}.status`]: "terima",
         });
     }
 
     async function setKosong(nim) {
         if (!active) return;
         const path = `submissions.${nim}`;
+        // hapus seluruh node submissions.NIM agar kembali "kosong"
         await updateDoc(doc(db, "tugas", active.id), {
             [path]: deleteField(),
         });
@@ -133,56 +135,50 @@ export default function DashboardTugas() {
     // gabungkan roster + submissions
     const submissions = useMemo(() => {
         const map = active?.submissions || {};
-        return ROSTER.map(([nim, name]) => {
+        return ROSTER.map(([no, nim, name, githubUrl]) => {
             const data = map[nim] || {};
-            const status =
-                data.status === "terima"
-                    ? "diterima"
-                    : data.status === "review"
-                        ? "review"
-                        : data.link || data.imageUrl
-                            ? "review"
-                            : "kosong";
+            const has =
+                !!data.link || !!data.imageUrl || (data.method && data.method === "manual");
             return {
+                no,
                 nim,
                 name,
+                githubUrl,
                 link: data.link || null,
                 imageUrl: data.imageUrl || null,
-                status,
                 method: data.method || null,
+                status: has ? "selesai" : "kosong",
             };
         });
     }, [active?.submissions]);
 
-    // filter by search (nim or name)
-    const filteredSubs = useMemo(() => {
-        const q = search.trim().toLowerCase();
-        if (!q) return submissions;
-        return submissions.filter(
-            (s) =>
-                s.nim.toLowerCase().includes(q) ||
-                s.name.toLowerCase().includes(q)
-        );
-    }, [search, submissions]);
+    // Filter data berdasarkan asdos
+    const fathurStudents = useMemo(() =>
+        submissions.filter(student => parseInt(student.no) <= 38),
+        [submissions]
+    );
+
+    const riyanStudents = useMemo(() =>
+        submissions.filter(student => parseInt(student.no) >= 39),
+        [submissions]
+    );
+
+    // Data yang aktif berdasarkan tab
+    const activeStudents = activeTab === "fathur" ? fathurStudents : riyanStudents;
 
     const total = submissions.length;
-    const terima = submissions.filter((s) => s.status === "terima").length;
-    const review = submissions.filter((s) => s.status === "review").length;
-    const kosong = total - terima - review;
+    const selesai = submissions.filter((s) => s.status === "selesai").length;
+    const kosong = total - selesai;
 
     return (
-        <div className="p-4 max-w-4xl mx-auto space-y-6">
+        <div className="p-4 max-w-6xl mx-auto space-y-6">
             {/* Header + Toolbar */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
                     <Link to="/dashboard">
-                        <h1 className="text-2xl font-bold">
-                            <i className="ri-arrow-left-line"></i> Dashboard Tugas
-                        </h1>
+                        <h1 className="text-2xl font-bold"><i className="ri-arrow-left-line"></i> Dashboard Tugas</h1>
                     </Link>
-                    <p className="text-sm text-gray-600">
-                        Kelola sesi tugas & pantau submission mahasiswa
-                    </p>
+                    <p className="text-sm text-gray-600">Kelola sesi tugas & pantau submission mahasiswa</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
@@ -198,7 +194,7 @@ export default function DashboardTugas() {
                 </div>
             </div>
 
-            {/* Selector Sesi */}
+            {/* Selector Sesi + Aksi Status */}
             <div className="p-4 border rounded-2xl bg-white shadow-sm">
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
                     <div className="flex-1 flex gap-2">
@@ -236,27 +232,30 @@ export default function DashboardTugas() {
                             <button
                                 onClick={() => updateStatus("draft")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "draft"
-                                        ? "bg-gray-900 text-white"
-                                        : "bg-gray-100 text-gray-800"
+                                    ? "bg-gray-900 text-white"
+                                    : "bg-gray-100 text-gray-800"
                                     }`}
+                                title="Set Draft"
                             >
                                 Draft
                             </button>
                             <button
                                 onClick={() => updateStatus("open")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "open"
-                                        ? "bg-green-600 text-white"
-                                        : "bg-green-100 text-green-800"
+                                    ? "bg-green-600 text-white"
+                                    : "bg-green-100 text-green-800"
                                     }`}
+                                title="Set Open"
                             >
                                 Open
                             </button>
                             <button
                                 onClick={() => updateStatus("closed")}
                                 className={`px-3 py-2 rounded-full text-sm ${active.status === "closed"
-                                        ? "bg-red-600 text-white"
-                                        : "bg-red-100 text-red-800"
+                                    ? "bg-red-600 text-white"
+                                    : "bg-red-100 text-red-800"
                                     }`}
+                                title="Set Closed"
                             >
                                 Closed
                             </button>
@@ -265,50 +264,59 @@ export default function DashboardTugas() {
                 </div>
             </div>
 
-            {/* Detail Sesi */}
+            {/* Detail Sesi + Rekap */}
             {active && (
                 <div className="p-4 border rounded-2xl bg-white shadow-sm space-y-4">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <div>
                             <h2 className="text-lg font-semibold">{active.title}</h2>
-                            <div className="text-sm text-gray-600">
-                                Deadline: {fmtDate(active.date)}
-                            </div>
+                            <div className="text-sm text-gray-600">Deadline: {fmtDate(active.date)}</div>
                         </div>
-                        {/* <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2">
                             <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-sm">
-                                Total <b>{total}</b>y
-                                
-                            </span>
-                            <span className="px-3 py-1 rounded-full bg-amber-500 text-white text-sm">
-                                Review <b>{review}</b>
+                                Total <b>{total}</b>
                             </span>
                             <span className="px-3 py-1 rounded-full bg-green-600 text-white text-sm">
-                                Diterima <b>{terima}</b>
+                                Selesai <b>{selesai}</b>
                             </span>
                             <span className="px-3 py-1 rounded-full bg-gray-400 text-white text-sm">
                                 Kosong <b>{kosong}</b>
                             </span>
-                        </div> */}
+                            <span
+                                className={`px-3 py-1 rounded-full text-sm ${active.status === "open"
+                                    ? "bg-green-100 text-green-800"
+                                    : active.status === "closed"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-gray-100 text-gray-800"
+                                    }`}
+                            >
+                                Status sesi: <b>{active.status}</b>
+                            </span>
+                        </div>
                     </div>
 
-                    {/* Search bar */}
-                    <div className="flex items-center gap-2 mt-2">
-                        <input
-                            type="text"
-                            placeholder="Cari berdasarkan NIM atau Nama..."
-                            className="w-full border rounded-lg px-3 py-2 text-sm"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        {search && (
+                    {/* Tab Asdos */}
+                    <div className="border-b">
+                        <div className="flex">
                             <button
-                                onClick={() => setSearch("")}
-                                className="px-3 py-2 text-sm bg-gray-100 rounded-lg hover:bg-gray-200"
+                                onClick={() => setActiveTab("fathur")}
+                                className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "fathur"
+                                        ? "border-blue-500 text-blue-600 bg-blue-50"
+                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                    }`}
                             >
-                                <i className="ri-close-line"></i>
+                                Asdos : Fathur (1-38)
                             </button>
-                        )}
+                            <button
+                                onClick={() => setActiveTab("riyan")}
+                                className={`px-4 py-2 font-medium text-sm border-b-2 transition-colors ${activeTab === "riyan"
+                                        ? "border-green-500 text-green-600 bg-green-50"
+                                        : "border-transparent text-gray-500 hover:text-gray-700"
+                                    }`}
+                            >
+                                Asdos : Riyan (39-78)
+                            </button>
+                        </div>
                     </div>
 
                     {/* Tabel */}
@@ -316,32 +324,34 @@ export default function DashboardTugas() {
                         <table className="min-w-full text-sm">
                             <thead className="bg-gray-50">
                                 <tr>
+                                    <th className="border px-3 py-2 text-left">No</th>
                                     <th className="border px-3 py-2 text-left">NIM</th>
                                     <th className="border px-3 py-2 text-left">Nama</th>
                                     <th className="border px-3 py-2 text-left">Status</th>
-                                    <th className="border px-3 py-2 text-left">Link / File</th>
+                                    <th className="border px-3 py-2 text-left">Link Github</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredSubs.map((s, idx) => (
-                                    <tr
-                                        key={s.nim}
-                                        className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                                    >
+                                {activeStudents.map((s, idx) => (
+                                    <tr key={s.nim} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                                        <td className="border px-3 py-2">{s.no}</td>
                                         <td className="border px-3 py-2">{s.nim}</td>
                                         <td className="border px-3 py-2">{s.name}</td>
                                         <td className="border px-3 py-2">
                                             <div className="flex items-center gap-2">
+                                                {/* Status Badge */}
                                                 <span
                                                     className={`px-2 py-0.5 rounded-full text-xs ${STATUS_BADGE[s.status]}`}
                                                 >
                                                     {s.status}
                                                 </span>
+
+                                                {/* Tombol di sisi kanan */}
                                                 <div className="flex items-center gap-2 ml-auto">
                                                     <button
-                                                        onClick={() => setTerimaManual(s.nim, s.name)}
+                                                        onClick={() => setSelesaiManual(s.nim, s.name)}
                                                         className="px-2 py-1 text-xs rounded-lg bg-emerald-500 text-white shadow hover:bg-emerald-600"
-                                                        title="Tandai Terima"
+                                                        title="Tandai Selesai (manual)"
                                                     >
                                                         ✓
                                                     </button>
@@ -355,32 +365,26 @@ export default function DashboardTugas() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="border px-3 py-2 space-x-2">
-                                            {s.link && (
+                                        <td className="border px-3 py-2">
+                                            {s.githubUrl && s.githubUrl !== "https://example.com" ? (
                                                 <a
-                                                    href={s.link}
+                                                    href={s.githubUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center gap-1 text-sky-600 underline"
+                                                    className="text-blue-600 hover:text-blue-800 underline"
                                                 >
-                                                    <i className="ri-external-link-line"></i> Open Here
+                                                    {s.githubUrl}
                                                 </a>
-                                            )}
-                                            {s.imageUrl && (
-                                                <button
-                                                    onClick={() => setPreviewUrl(s.imageUrl)}
-                                                    className="inline-flex items-center gap-1 text-sky-600 underline"
-                                                >
-                                                    <i className="ri-image-2-line"></i> Lihat File
-                                                </button>
+                                            ) : (
+                                                <span className="text-gray-400">-</span>
                                             )}
                                         </td>
                                     </tr>
                                 ))}
-                                {filteredSubs.length === 0 && (
+                                {activeStudents.length === 0 && (
                                     <tr>
-                                        <td colSpan={4} className="text-center p-6 text-gray-500">
-                                            Tidak ada hasil yang cocok
+                                        <td colSpan={5} className="text-center p-6 text-gray-500">
+                                            Belum ada data submission
                                         </td>
                                     </tr>
                                 )}
@@ -389,8 +393,114 @@ export default function DashboardTugas() {
                     </div>
 
                     <p className="text-[11px] text-gray-500">
-                        *Klik <b>✓</b> untuk tandai “Terima”, atau <b>x</b> untuk reset ke kosong.
+                        *Klik <b>Selesai</b> untuk menandai manual, atau <b>Kosong</b> untuk reset.
                     </p>
+                </div>
+            )}
+
+            {/* modal add/edit sesi */}
+            {showModal && (
+                <div className="fixed inset-0 bg-black/50 grid place-items-center z-50">
+                    <div className="bg-white p-6 rounded-2xl w-full max-w-md space-y-4 shadow-lg">
+                        <div className="flex items-center justify-between">
+                            <h2 className="font-bold text-lg">
+                                {editMode ? "Edit Sesi Tugas" : "Tambah Sesi Tugas"}
+                            </h2>
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="text-gray-500 hover:text-gray-900"
+                                title="Tutup"
+                            >
+                                <i className="ri-close-line text-xl"></i>
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSave} className="space-y-3">
+                            <label className="text-sm">
+                                Judul Tugas
+                                <input
+                                    type="text"
+                                    placeholder="mis. P1 - HTML Dasar"
+                                    className="border rounded-lg p-2 w-full mt-1"
+                                    value={form.title}
+                                    onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                                />
+                            </label>
+
+                            <label className="text-sm">
+                                Tanggal (deadline)
+                                <input
+                                    type="date"
+                                    className="border rounded-lg p-2 w-full mt-1"
+                                    value={form.date}
+                                    onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+                                />
+                            </label>
+
+                            <label className="text-sm">
+                                Status
+                                <select
+                                    className="border rounded-lg p-2 w-full mt-1"
+                                    value={form.status}
+                                    onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
+                                >
+                                    <option value="draft">Draft</option>
+                                    <option value="open">Open</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </label>
+
+                            <div className="flex justify-between items-center">
+                                {/* tombol status sesi tetap ada di modal (seperti request-mu sebelumnya) */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs text-gray-500">Quick status:</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm((f) => ({ ...f, status: "draft" }))}
+                                        className={`px-2 py-1 rounded-full text-xs ${form.status === "draft"
+                                            ? "bg-gray-900 text-white"
+                                            : "bg-gray-100 text-gray-800"
+                                            }`}
+                                    >
+                                        Draft
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm((f) => ({ ...f, status: "open" }))}
+                                        className={`px-2 py-1 rounded-full text-xs ${form.status === "open"
+                                            ? "bg-green-600 text-white"
+                                            : "bg-green-100 text-green-800"
+                                            }`}
+                                    >
+                                        Open
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setForm((f) => ({ ...f, status: "closed" }))}
+                                        className={`px-2 py-1 rounded-full text-xs ${form.status === "closed"
+                                            ? "bg-red-600 text-white"
+                                            : "bg-red-100 text-red-800"
+                                            }`}
+                                    >
+                                        Closed
+                                    </button>
+                                </div>
+
+                                <div className="flex gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModal(false)}
+                                        className="px-3 py-2 border rounded-lg"
+                                    >
+                                        Batal
+                                    </button>
+                                    <button type="submit" className="px-3 py-2 bg-black text-white rounded-lg">
+                                        Simpan
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
 
