@@ -1,0 +1,151 @@
+ <style> :root {
+     --gap: 1rem;
+ }
+
+ body {
+     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+     line-height: 1.5;
+     margin: 0;
+     background: #f7f7f8;
+     color: #222;
+ }
+
+ header,
+ main,
+ footer {
+     max-width: 900px;
+     margin: 0 auto;
+     padding: 1.25rem;
+ }
+
+ header {
+     background: white;
+     border-bottom: 1px solid #e6e6e9;
+     position: sticky;
+     top: 0;
+ }
+
+ h1 {
+     margin: 0 0 .5rem;
+     font-size: 1.5rem;
+ }
+
+ .note {
+     background: #fff8e1;
+     border: 1px solid #ffe082;
+     padding: .75rem;
+     border-radius: .5rem;
+ }
+
+ section {
+     background: white;
+     border: 1px solid #e6e6e9;
+     border-radius: .75rem;
+     padding: 1rem;
+     margin: 1rem 0;
+ }
+
+ fieldset {
+     border: 1px solid #dcdce0;
+     border-radius: .5rem;
+     padding: 1rem;
+     margin-bottom: 1rem;
+ }
+
+ legend {
+     padding: 0 .5rem;
+     font-weight: 600;
+ }
+
+ .grid {
+     display: grid;
+     grid-template-columns: 1fr;
+     gap: var(--gap);
+ }
+
+ .row {
+     display: grid;
+     grid-template-columns: 180px 1fr;
+     align-items: center;
+     gap: .75rem;
+ }
+
+ label {
+     font-weight: 600;
+ }
+
+ input[type="text"],
+ input[type="password"],
+ input[type="email"],
+ input[type="number"],
+ input[type="date"],
+ input[type="time"],
+ input[type="url"],
+ input[type="tel"],
+ input[type="search"],
+ input[type="color"],
+ input[type="file"],
+ select,
+ textarea,
+ input[type="range"] {
+     width: 100%;
+     padding: .55rem .6rem;
+     border: 1px solid #cfd3d8;
+     border-radius: .5rem;
+     background: #fff;
+ }
+
+ input[type="color"] {
+     padding: 0;
+     height: 2.25rem;
+ }
+
+ textarea {
+     min-height: 90px;
+ }
+
+ .actions {
+     display: flex;
+     gap: .75rem;
+     flex-wrap: wrap;
+ }
+
+ button,
+ input[type="submit"],
+ input[type="reset"] {
+     border: 1px solid #1e88e5;
+     background: #2196f3;
+     color: white;
+     padding: .6rem 1rem;
+     border-radius: .5rem;
+     cursor: pointer;
+ }
+
+ input[type="reset"] {
+     border-color: #9e9e9e;
+     background: #bdbdbd;
+ }
+
+ .muted {
+     color: #666;
+     font-size: .95rem;
+ }
+
+ code {
+     background: #eef2f6;
+     padding: .1rem .35rem;
+     border-radius: .25rem;
+ }
+
+ footer {
+     color: #666;
+     font-size: .9rem;
+ }
+
+ @media (max-width: 720px) {
+     .row {
+         grid-template-columns: 1fr;
+     }
+ }
+
+ </style>

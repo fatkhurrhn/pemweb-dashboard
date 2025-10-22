@@ -19,34 +19,34 @@ export default function Home() {
                     </Link>
 
                     <div className="flex items-center gap-2">
-                        <Link
+                        {/* <Link
                             to="/login"
                             className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
                         >
                             Login
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                             to="/checkin"
                             className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
                         >
                             <i className="ri-qr-scan-2-line mr-2" /> Presensi
-                        </Link>
-                        <Link
+                        </Link> */}
+                        {/* <Link
                             to="/tugas"
                             className="hidden sm:inline-flex px-3 py-2 rounded-lg border hover:bg-gray-50"
                         >
                             <i className="ri-upload-cloud-2-line mr-2" /> Tugas
-                        </Link>
+                        </Link> */}
 
                         
 
                         <Link
-                            to="https://exampllee.vercel.app/"
+                            to="/login"
                             className="inline-flex items-center px-3 py-2 rounded-lg 
              bg-white text-gray-900 border border-gray-300 
              hover:bg-gray-100 hover:border-gray-400 transition"
                         >
-                            <i className="ri-book-marked-line mr-2" /> Assets
+                            <i className="ri-book-marked-line mr-2" /> Login
                         </Link>
                     </div>
                 </div>
@@ -82,14 +82,13 @@ export default function Home() {
                                 <i className="ri-user-follow-line" /> Rekap Presensi
                             </Link>
 
-                            {/* Video Tutorial (ganti Pertanyaan) */}
                             <Link
-                                to="/rekap-tugas"
+                                to="https://exampllee.vercel.app/"
                                 className="inline-flex items-center justify-center gap-2 
                px-3 py-2 text-sm rounded-lg border hover:bg-gray-50 
                flex-1 sm:hidden"
                             >
-                                <i className="ri-folder-upload-line" /> Rekap Tugas
+                                <i className="ri-book-marked-line" /> Assets
                             </Link>
 
                             {/* --- Desktop Layout --- */}
@@ -104,13 +103,13 @@ export default function Home() {
                             </Link>
 
                             {/* Submit Tugas - hidden di mobile */}
-                            <Link
+                            {/* <Link
                                 to="/rekap-tugas"
                                 className="hidden sm:inline-flex items-center gap-2 
                px-4 py-3 rounded-xl border hover:bg-gray-50"
                             >
                                 <i className="ri-upload-cloud-2-line" /> Rekap Tugas
-                            </Link>
+                            </Link> */}
 
                             {/* Pertanyaan (desktop) */}
                             <Link
@@ -157,9 +156,9 @@ export default function Home() {
                                     className="group p-4 rounded-xl border hover:border-indigo-300 hover:bg-indigo-50/50 transition"
                                 >
                                     <i className="ri-task-line text-2xl text-indigo-600" />
-                                    <div className="mt-2 font-semibold">Kirim Tugas</div>
+                                    <div className="mt-2 font-semibold">Lihat Rekap</div>
                                     <p className="text-xs text-gray-600">
-                                        Repo link atau upload gambar.
+                                        Rekap presensi dengan rapi
                                     </p>
                                 </Link>
                                 <Link
@@ -196,12 +195,12 @@ export default function Home() {
                             desc="Cari 3 digit terakhir NIM, klik hadir, selesai. Data langsung masuk dashboard."
                             tone="sky"
                         />
-                        <Feature
+                        {/* <Feature
                             icon="ri-upload-2-line"
                             title="Submit dua opsi"
                             desc="Kirim link repository atau upload gambar langsung — Cloudinary ready."
                             tone="indigo"
-                        />
+                        /> */}
                         <Feature
                             icon="ri-bar-chart-2-line"
                             title="Rekap realtime"
@@ -240,22 +239,16 @@ export default function Home() {
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div>
                                 <h3 className="text-xl font-bold">Siap untuk mulai?</h3>
-                                <p className="text-gray-600">Presensi dan tugas tinggal sekali klik.</p>
+                                <p className="text-gray-600">Gass sung aja cobain dan eksplor</p>
                             </div>
-                            <div className="flex gap-3">
+                            {/* <div className="flex gap-3">
                                 <Link
                                     to="/checkin"
                                     className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-sky-600 text-white hover:opacity-90"
                                 >
                                     <i className="ri-qr-scan-2-line" /> Presensi
                                 </Link>
-                                <Link
-                                    to="/tugas"
-                                    className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border hover:bg-white"
-                                >
-                                    <i className="ri-upload-cloud-2-line" /> Submit
-                                </Link>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

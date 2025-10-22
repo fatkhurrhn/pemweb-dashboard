@@ -18,7 +18,7 @@ export default function BottomNav() {
         { name: "Presensi", path: "/checkin", icon: "ri-qr-scan-2" },
         { name: "Intruksi", path: "/intruksi", icon: "ri-folder-2" },
         { name: "Rekap P", path: "/rekap-presensi", icon: "ri-file-list-3" },
-        { name: "Rekap T", path: "/rekap-tugas", icon: "ri-file-list-3" },
+        { name: "Assets", path: "https://exampllee.vercel.app/", icon: "ri-book-marked" },
     ];
 
     // Rekap aktif untuk dua sub: /rekap-presensi, /rekap-tugas

@@ -57,6 +57,18 @@ const TASKS = [
         reference: "https://exampllee.vercel.app/t4.html",
         videos: [],
     },
+    {
+        id: "t5",
+        code: "T5",
+        title: "HTML Form",
+        color: "bg-sky-600",
+
+        instruction : "coming soon",
+
+        // instruction: "Buatlah sebuah halaman html dengan menerapkan materi yang diberikan dan halamannya harus mirip dengan refrensi dibawah ini!",
+        // reference: "https://exampllee.vercel.app/t5.html",
+        // videos: [],
+    },
 ];
 
 export default function Tutorial() {
@@ -111,9 +123,7 @@ export default function Tutorial() {
                                 <div className="text-left">
                                     <div className="font-semibold text-gray-800">{t.title}</div>
                                     <div className="text-xs text-gray-500">
-                                        {t.videos?.length > 0
-                                            ? `${t.videos.length} video available`
-                                            : "video not available"}
+                                        klik untuk lihat detailnya
                                     </div>
                                 </div>
                             </div>
@@ -160,13 +170,21 @@ export default function Tutorial() {
                     </section>
                 ))}
 
-                {/* Quick help */}
                 {/* <div className="text-xs text-gray-500 pt-2">
                     Note p4:  <Link to="http://pemweb01.vercel.app/style-p4.css"><b>buka dan salin css ini</b></Link> 
                 </div> */}
-                <div className="text-xs text-gray-500 -pt-3">
+                {/* <div className="text-xs text-gray-500 -pt-3">
                     Note t4:  <Link to="http://pemweb01.vercel.app/style-t4.css"><b>buka dan salin css ini</b></Link> 
+                </div> */}
+
+                <div className="text-xs text-gray-500 -pt-3">
+                    Note p5:  <Link to="http://pemweb01.vercel.app/style-p5.css"><b>buka dan salin style css ini</b></Link>
                 </div>
+
+                {/* <div className="text-xs text-gray-500 -pt-3">
+                    Note t5:  <Link to="http://pemweb01.vercel.app/style-t5.css"><b>buka dan salin css ini</b></Link>
+                </div> */}
+
             </div>
 
             <BottomNav />
