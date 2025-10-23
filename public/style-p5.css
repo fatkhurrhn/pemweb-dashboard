@@ -15,7 +15,8 @@
  footer {
      max-width: 900px;
      margin: 0 auto;
-     padding: 1.25rem;
+     padding: 0.75rem 1rem;
+     /* 🔹 Diperpendek padding */
  }
 
  header {
@@ -23,6 +24,7 @@
      border-bottom: 1px solid #e6e6e9;
      position: sticky;
      top: 0;
+     z-index: 10;
  }
 
  h1 {
@@ -30,25 +32,19 @@
      font-size: 1.5rem;
  }
 
- .note {
-     background: #fff8e1;
-     border: 1px solid #ffe082;
-     padding: .75rem;
-     border-radius: .5rem;
- }
-
  section {
      background: white;
      border: 1px solid #e6e6e9;
      border-radius: .75rem;
-     padding: 1rem;
-     margin: 1rem 0;
+     padding: 1rem 1.5rem;
+     margin: 0.75rem 0;
+     /* 🔹 Jarak antar section dikurangi */
  }
 
  fieldset {
      border: 1px solid #dcdce0;
      border-radius: .5rem;
-     padding: 1rem;
+     padding: 1rem 1.25rem;
      margin-bottom: 1rem;
  }
 
@@ -89,10 +85,12 @@
  textarea,
  input[type="range"] {
      width: 100%;
+     max-width: 500px;
      padding: .55rem .6rem;
      border: 1px solid #cfd3d8;
      border-radius: .5rem;
      background: #fff;
+     box-sizing: border-box;
  }
 
  input[type="color"] {
@@ -108,6 +106,8 @@
      display: flex;
      gap: .75rem;
      flex-wrap: wrap;
+     margin-top: .75rem;
+     /* 🔹 Diperpendek sedikit */
  }
 
  button,
@@ -126,25 +126,44 @@
      background: #bdbdbd;
  }
 
- .muted {
-     color: #666;
-     font-size: .95rem;
- }
-
- code {
-     background: #eef2f6;
-     padding: .1rem .35rem;
-     border-radius: .25rem;
- }
-
  footer {
      color: #666;
      font-size: .9rem;
+     text-align: center;
+     padding-top: .5rem;
+     /* 🔹 Jarak atas footer diperpendek */
  }
 
  @media (max-width: 720px) {
+
+     header,
+     main,
+     footer {
+         padding: 0.75rem;
+     }
+
+     section {
+         padding: 1rem;
+         margin: 0.75rem 0.5rem;
+     }
+
+     fieldset {
+         padding: 1rem;
+     }
+
      .row {
          grid-template-columns: 1fr;
+         gap: .5rem;
+     }
+
+     input,
+     select,
+     textarea {
+         max-width: 100%;
+     }
+
+     .actions {
+         justify-content: center;
      }
  }
 
