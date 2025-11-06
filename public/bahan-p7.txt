@@ -1,0 +1,16 @@
+1. Gerbang Box Model
+Di awal petualangannya, Arya menemukan sebuah gerbang besar berbentuk kotak. Penjaganya berkata, "Untuk lewat, kau harus tahu empat lapisan suci: isi, bantalan, perisai, dan ruang luar." Arya menepuk gerbang itu, dan setiap lapisan menyala seakan menyambutnya masuk.
+
+2. Desa Display
+Arya tiba di desa yang penuh penduduk unik. Ada yang berjalan tegak dan memenuhi jalan seperti block, ada yang luwes seperti inline, dan ada yang bisa bertransformasi seperti inline-block. Mereka menyambut Arya dengan ramah dan menunjukkan cara hidup mereka.
+
+3. Sungai Float
+Ketika sampai di tepi sungai, Arya melihat sebuah perahu dengan simbol angin. Gambar di lambung perahu tampak seperti mengalir mengikuti arus.
+
+Penjaga sungai berkata, “Di sini, segala yang ringan akan mengapung sesuai arahnya, ada yang ke kiri, ada yang ke kanan.” Arya pun melihat bagaimana air membawa gambar itu, sementara teks di sekitarnya menari mengikuti aliran.
+
+4. Kota Flexbox
+Kota berikutnya penuh keteraturan. Warganya sangat kompak, selalu berbagi ruang dan saling menyesuaikan agar harmoni tercipta.
+
+5. Kerajaan Grid
+Di puncak petualangan, Arya memasuki kerajaan tempat segala sesuatu tersusun bak mozaik sempurna. Setiap petak memiliki peran penting dalam menjaga keseimbangan.
