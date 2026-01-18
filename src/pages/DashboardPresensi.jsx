@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { Link } from "react-router-dom";
+import * as XLSX from "xlsx"; // Import library Excel
 
 // ====== ROSTER (NIM -> NAMA) ======
 const ROSTER = [
@@ -149,6 +150,21 @@ function toTimestamp(str) {
     return Timestamp.fromDate(new Date(str));
 }
 
+// Helper untuk format tanggal Excel
+function formatDateForExcel(date) {
+    if (!date) return "-";
+    const d = date.toDate();
+    return d.toLocaleString('id-ID', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
 export default function DashboardPresensi() {
     // daftar sesi
     const [sessions, setSessions] = useState([]);
@@ -219,7 +235,248 @@ export default function DashboardPresensi() {
         }
     }, [active?.id, stats.total, stats["belum isi"], stats.hadir, stats.izin, stats.sakit, stats.alpha, stats.lainnya]);
 
-    // actions (LOGIKA TETAP SAMA)
+    // Fungsi untuk ekspor ke Excel
+    const exportToExcel = () => {
+        if (!active || !active.attendances) {
+            alert("Tidak ada data untuk diekspor!");
+            return;
+        }
+
+        // Siapkan data untuk Excel
+        const excelData = [];
+
+        // Header
+        excelData.push([
+            "REKAP PRESENSI",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([
+            `Judul Sesi: ${active.title}`,
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([
+            `Waktu Mulai: ${formatDateForExcel(active.startAt)}`,
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([
+            `Waktu Selesai: ${formatDateForExcel(active.endAt)}`,
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([
+            `Status Sesi: ${active.status}`,
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([
+            `Tanggal Ekspor: ${new Date().toLocaleString('id-ID')}`,
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]);
+
+        excelData.push([]); // Baris kosong
+
+        // Header tabel
+        excelData.push([
+            "No",
+            "NIM",
+            "Nama Lengkap",
+            "Status",
+            "Metode Check-in",
+            "Waktu Check-in",
+            "Keterangan"
+        ]);
+
+        // Data presensi
+        const attendList = Object.entries(active.attendances)
+            .map(([nim, data]) => ({ nim, ...data }))
+            .sort((a, b) => a.nim.localeCompare(b.nim));
+
+        let index = 1;
+        attendList.forEach((item) => {
+            excelData.push([
+                index++,
+                item.nim,
+                item.name,
+                item.status || "belum isi",
+                item.method || "-",
+                item.checkedInAt ? formatDateForExcel(item.checkedInAt) : "-",
+                "" // Kolom keterangan kosong
+            ]);
+        });
+
+        excelData.push([]); // Baris kosong
+
+        // Statistik
+        excelData.push(["STATISTIK REKAPITULASI"]);
+        excelData.push(["Total Mahasiswa", stats.total]);
+        excelData.push(["Hadir", stats.hadir]);
+        excelData.push(["Izin", stats.izin]);
+        excelData.push(["Sakit", stats.sakit]);
+        excelData.push(["Alpha", stats.alpha]);
+        excelData.push(["Belum Mengisi", stats["belum isi"]]);
+        excelData.push(["Persentase Kehadiran", `${((stats.hadir / stats.total) * 100).toFixed(2)}%`]);
+
+        // Buat worksheet
+        const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+        // Atur lebar kolom
+        const colWidths = [
+            { wch: 5 },   // No
+            { wch: 15 },  // NIM
+            { wch: 40 },  // Nama
+            { wch: 12 },  // Status
+            { wch: 15 },  // Metode
+            { wch: 25 },  // Waktu
+            { wch: 20 },  // Keterangan
+        ];
+        ws['!cols'] = colWidths;
+
+        // Buat workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Rekap Presensi");
+
+        // Generate nama file
+        const fileName = `Rekap_Presensi_${active.title.replace(/[^a-z0-9]/gi, '_')}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+        // Download file
+        XLSX.writeFile(wb, fileName);
+
+        alert(`Data berhasil diekspor ke ${fileName}`);
+    };
+
+    // Fungsi untuk ekspor semua sesi
+    const exportAllSessions = () => {
+        if (sessions.length === 0) {
+            alert("Tidak ada sesi untuk diekspor!");
+            return;
+        }
+
+        // Buat workbook baru
+        const wb = XLSX.utils.book_new();
+
+        // Untuk setiap sesi, buat sheet terpisah
+        sessions.forEach((session, sessionIndex) => {
+            const excelData = [];
+
+            // Header
+            excelData.push(["REKAP PRESENSI - SEMUA SESI"]);
+            excelData.push([`Sheet ${sessionIndex + 1}: ${session.title}`]);
+            excelData.push([`Waktu: ${session.startAt?.toDate?.().toLocaleString('id-ID')} s/d ${session.endAt?.toDate?.().toLocaleString('id-ID')}`]);
+            excelData.push([`Status: ${session.status}`]);
+            excelData.push([]);
+
+            // Header tabel
+            excelData.push(["No", "NIM", "Nama", "Status", "Metode", "Waktu Check-in"]);
+
+            // Data presensi
+            if (session.attendances) {
+                const attendList = Object.entries(session.attendances)
+                    .map(([nim, data]) => ({ nim, ...data }))
+                    .sort((a, b) => a.nim.localeCompare(b.nim));
+
+                let index = 1;
+                attendList.forEach((item) => {
+                    excelData.push([
+                        index++,
+                        item.nim,
+                        item.name,
+                        item.status || "belum isi",
+                        item.method || "-",
+                        item.checkedInAt ? item.checkedInAt.toDate().toLocaleString('id-ID') : "-"
+                    ]);
+                });
+            }
+
+            // Buat worksheet
+            const ws = XLSX.utils.aoa_to_sheet(excelData);
+
+            // Atur lebar kolom
+            ws['!cols'] = [
+                { wch: 5 },
+                { wch: 15 },
+                { wch: 40 },
+                { wch: 12 },
+                { wch: 15 },
+                { wch: 25 }
+            ];
+
+            // Tambahkan sheet ke workbook (gunakan nama yang pendek)
+            const sheetName = `Sesi${sessionIndex + 1}`.substring(0, 31);
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        });
+
+        // Tambahkan sheet summary
+        const summaryData = [];
+        summaryData.push(["REKAPITULASI SEMUA SESI"]);
+        summaryData.push(["Tanggal Ekspor", new Date().toLocaleString('id-ID')]);
+        summaryData.push(["Jumlah Sesi", sessions.length]);
+        summaryData.push([]);
+        summaryData.push(["No", "Judul Sesi", "Waktu", "Status", "Total", "Hadir", "Izin", "Sakit", "Alpha", "Belum Isi"]);
+
+        sessions.forEach((session, index) => {
+            const sessionStats = session.stats || computeStats(session.attendances || {});
+            summaryData.push([
+                index + 1,
+                session.title,
+                `${session.startAt?.toDate?.().toLocaleDateString('id-ID')}`,
+                session.status,
+                sessionStats.total || 0,
+                sessionStats.hadir || 0,
+                sessionStats.izin || 0,
+                sessionStats.sakit || 0,
+                sessionStats.alpha || 0,
+                sessionStats["belum isi"] || 0
+            ]);
+        });
+
+        const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+        wsSummary['!cols'] = [
+            { wch: 5 }, { wch: 30 }, { wch: 15 }, { wch: 10 },
+            { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }
+        ];
+        XLSX.utils.book_append_sheet(wb, wsSummary, "Summary");
+
+        // Download file
+        const fileName = `Rekap_Semua_Sesi_Presensi_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+
+        alert(`Semua sesi (${sessions.length}) berhasil diekspor!`);
+    };
+
+    // actions
     async function createSession(e) {
         e.preventDefault();
         if (!title || !startAt || !endAt) return alert("Lengkapi judul & waktu.");
@@ -293,22 +550,51 @@ export default function DashboardPresensi() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                   <Link to="/dashboard">
-                        <h1 className="text-2xl font-bold"><i class="ri-arrow-left-line"></i> Dashboard Presensi</h1>
-                        </Link>
+                    <Link to="/dashboard">
+                        <h1 className="text-2xl font-bold"><i className="ri-arrow-left-line"></i> Dashboard Presensi</h1>
+                    </Link>
                     <p className="text-sm text-gray-500">Pantau Presensi mahasiswa secara realtime</p>
                 </div>
-                <button
-                    onClick={() => setShowCreate(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black text-white shadow hover:opacity-90"
-                >
-                    <span className="text-lg">＋</span> Add Session
-                </button>
+                <div className="flex gap-2">
+                    {/* Tombol Export */}
+                    <button
+                        onClick={exportToExcel}
+                        disabled={!active}
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${!active ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'} text-white shadow transition-colors`}
+                        title={!active ? "Pilih sesi terlebih dahulu" : "Ekspor sesi aktif ke Excel"}
+                    >
+                        <i className="ri-file-excel-2-line"></i> Export Excel
+                    </button>
+
+                    {/* Tombol Export All */}
+                    {sessions.length > 0 && (
+                        <button
+                            onClick={exportAllSessions}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-white shadow transition-colors"
+                            title="Ekspor semua sesi ke Excel"
+                        >
+                            <i className="ri-file-excel-2-line"></i> Export All
+                        </button>
+                    )}
+
+                    {/* Tombol Add Session */}
+                    <button
+                        onClick={() => setShowCreate(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black text-white shadow hover:opacity-90"
+                    >
+                        <span className="text-lg">＋</span> Add Session
+                    </button>
+                </div>
             </div>
 
             {/* Pilih sesi */}
             <div className="p-4 border rounded-xl bg-white/60 backdrop-blur">
-                <h2 className="font-semibold mb-2">Pilih Sesi</h2>
+                <div className="flex justify-between items-center mb-2">
+                    <h2 className="font-semibold">Pilih Sesi</h2>
+                    <div className="text-sm text-gray-500">
+                        Total: {sessions.length} sesi
+                    </div>
+                </div>
                 {loading ? (
                     <div>Loading…</div>
                 ) : sessions.length === 0 ? (
@@ -321,7 +607,7 @@ export default function DashboardPresensi() {
                     >
                         {sessions.map((s) => (
                             <option key={s.id} value={s.id}>
-                                {s.title} — {s.status}
+                                {s.title} — {s.status} ({s.stats?.hadir || 0}/{s.stats?.total || 0})
                             </option>
                         ))}
                     </select>
@@ -346,6 +632,12 @@ export default function DashboardPresensi() {
                             </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
+                            <button
+                                onClick={exportToExcel}
+                                className="px-3 py-2 border rounded-lg bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1"
+                            >
+                                <i className="ri-file-excel-2-line"></i> Export
+                            </button>
                             <button onClick={() => updateStatus("draft")} className="px-3 py-2 border rounded-lg hover:bg-gray-50">
                                 Draft
                             </button>
@@ -396,14 +688,31 @@ export default function DashboardPresensi() {
                                 <StatChip label="Alpha" value={stats.alpha} className={STATUS_BADGE.alpha} />
                                 <StatChip label="Total" value={stats.total} className="bg-black text-white" />
                             </div>
-                            <div className="text-xs text-gray-500 mt-2">
-                                *Stat juga tersimpan di field <code>stats</code>.
+                            <div className="flex justify-between items-center mt-2">
+                                <div className="text-xs text-gray-500">
+                                    *Stat juga tersimpan di field <code>stats</code>.
+                                </div>
+                                <button
+                                    onClick={exportToExcel}
+                                    className="text-xs px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                >
+                                    Export Excel
+                                </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Tabel Kehadiran + Edit Manual */}
                     <div className="overflow-auto">
+                        <div className="flex justify-between items-center mb-2">
+                            <h4 className="font-semibold">Daftar Kehadiran ({attendList.length} mahasiswa)</h4>
+                            <button
+                                onClick={exportToExcel}
+                                className="text-sm px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1"
+                            >
+                                <i className="ri-file-excel-2-line"></i> Export Tabel
+                            </button>
+                        </div>
                         <table className="min-w-full text-sm border rounded-lg overflow-hidden">
                             <thead className="bg-gray-50">
                                 <tr>
